@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>blendirendi</title>
+    <script src="vue.min.js"></script>
+    <script src="blendirendi.js"></script>
+    <link rel="stylesheet" href="blendirendi.css">
+</head>
+<body  onload="start()">
+    <div id="app" class="content">
+        <h1>blendirendi</h1>
+        
+        <div class="panel green">
+            <h2 @click="active_upload = !active_upload">upload</h2>
+            <form id="upload_form" v-if="active_upload" action="/api/upload" method="post" @submit="check_form" target="hidden-iframe">
+                <div class="gridWrap">
+                    <div>
+                        <p style="color:red" v-if="upload.error != ''">{{upload.error}}</p>
+
+                        <p><label>File</label><input type="file" id="myFile" name="upload"></p>
+        
+                        <p><label>is animation</label><input type="checkbox" name="is_animation" v-model="upload.is_animation"></p>
+                        
+                        <p><label v-if="upload.is_animation">startframe</label><label v-if="!upload.is_animation">frame</label><input type="number" name="startframe" v-model="upload.startframe"></p>
+                        
+                        <p v-if="upload.is_animation"><label>endframe</label><input type="number" name="endframe" v-model="upload.endframe"></p>
+                    </div>
+                    <div>
+
+                        <p><label>enable after upload</label><input type="checkbox" name="enable" v-model="upload.enable"></p>
+
+                        <p><label>priority (higher = first)</label><input type="number" name="priority" v-model="upload.priority"></p>
+
+                        <p><label></label><input type="submit"></p>
+                    </div>
+                </div>
+            </form>
+            <iframe name="hidden-iframe" style="display: none;"></iframe>
+        </div>
+
+        
+        <div class="panel red">
+            <h2 @click="active_jobs = !active_jobs">jobs</h2>
+            <table v-if="active_jobs">
+                <tr>        
+                    <th>id</th>
+                    <th>name</th>
+                    <th>frameset</th>
+                    <th>progress</th>
+                    <th>enabled</th>
+                    <th>priority</th>
+                    <th>action</th>
+                </tr>
+                <tr v-for="_job in jobs" @click="action_job_click(_job)" v-bind:class="{ 'tableActive' : _job.id == job.id }">
+                    <td style="width: 5%">{{_job.id}}</td>
+                    <td style="width: 40%; font-weight: bold">{{_job.name}}</td>
+                    <td style="width: 10%">{{_job | eval_frameset}}</td>
+                    <td style="width: 10%">{{_job | eval_progress}}</td>
+                    <td style="width: 10%"><input type="checkbox" class="value" v-model="_job.enabled" @click="job_save_enabled(_job)"></input></td>
+                    <td style="width: 10%">{{_job.priority}}
+                        <button type="button" @click="job_save_priority(_job, -1)">-</button>
+                        <button type="button" @click="job_save_priority(_job, +1)">+</button>
+                    </td>
+                    <td style="width: 10%">                        
+                        <button type="button" @click="action_delete(_job)">delete</button>
+                        <button type="button" @click="action_download_frames(_job)">downl</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        
+        <div class="panel blue">
+            <h2 @click="active_job = !active_job">job detail <span style="color: #2152ad">{{job.name}}</span></h2>
+            <div v-if="active_job && job">
+                <div class="gridWrap">
+
+                    <div>
+                        <div>
+                            <div class="key">id</div>
+                            <div class="value">{{job.id}}</div>
+                        </div>
+
+                        <div>
+                            <div class="key">enabled</div>
+                            <input type="checkbox" class="value" v-model="job.enabled" @click="job_save_enabled(job)"></input>
+                        </div>
+
+                        <div>
+                            <div class="key">priority</div>
+                            <div class="value">{{job.priority}}</div>
+                            <button type="button" @click="job_save_priority(job, -1)">-</button>
+                            <button type="button" @click="job_save_priority(job, +1)">+</button>
+                        </div>
+
+                        <div>
+                            <div class="key">frameset</div>
+                            <div class="value">{{job | eval_frameset}}</div>
+                        </div>
+
+                        <div>
+                            <div class="key">progress</div>
+                            <div class="value">{{job | eval_progress}}</div>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="button" @click="action_delete(job)">delete job</button>
+                        <br>
+                        <br>
+                        <button type="button" @click="action_download_frames(job)">download frames</button>
+                        <br>
+                        <br>
+                        <button type="button" @click="action_download_blend(job)">download blend</button>
+                    </div>
+                </div>
+
+                <div class="flow_container">
+                    <div class="flow_panel" v-for="frame in job.frames">
+                        <div class="image_container">
+                            <a v-bind:href="'/api/frame?id=' + job.id + '&nr=' + frame.nr" target="_blank">
+                            <image v-if="frame.status==2" v-bind:src="'/api/thumbnail?id=' + job.id + '&nr=' + frame.nr"></image></a>
+                        </div>
+                        <div class="image_buttonwrapper">
+                            <button type="button" @click="action_reset_frame(frame)">redo</button>
+                            <button type="button" @click="action_download_frame(job, frame)">downl</button>
+                        </div>
+                        <div class="image_bottext">#{{frame.nr}} - stat={{frame.status}}<br>svr={{frame.renderer}}</div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

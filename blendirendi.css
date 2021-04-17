@@ -1,0 +1,156 @@
+html {
+	height: 100%;
+}
+
+body {
+	margin: 20px;
+	font-family: Arial, Tahoma, Helvetica, sans-serif;
+	color: white;
+	background-color: black;
+}
+
+label {
+    width: 200px;
+    display: inline-block;
+}
+
+h1, h2, h3 {
+	margin: 0;
+	margin-bottom: 10px;
+	font-weight: bold;
+}
+h1 {
+	margin-left: 30px;
+}
+
+table {
+	
+	border-collapse: collapse;
+}
+
+.tableActive {
+	background-color: #ad3d21;
+}
+
+td {
+	border-bottom: 1px solid rgb(50,50,50);
+}
+
+th {
+    text-align: left;
+    width: 150px;
+	border-bottom: 1px solid rgb(50,50,50);
+	background-color: rgb(20,20,20);
+}
+
+
+
+
+/* custom page elements */
+
+.content {
+	max-width: 1200px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.panel {
+	margin: 10px;
+	padding: 10px;
+	padding-left: 15px;
+	display: block;
+	border: 2px solid white;
+	border-radius: 12px;
+}
+.panel.green {
+	border: 2px solid #73AD21 !important;
+}
+.panel.red {
+	border: 2px solid #ad3d21 !important;
+}
+.panel.blue {
+	border: 2px solid #2152ad !important;
+}
+
+.gridWrap {
+	display: grid;
+	grid-template-columns: auto auto auto;
+	width: 100%;
+}
+
+
+
+.button {
+    height: 20px;
+    background-color: gray;
+}
+
+
+.key {
+	width: 100px;
+	margin: 5px;
+	margin-left: 0;
+	display: inline-block;
+	vertical-align: middle;
+	color: gray;
+}
+
+.value {
+	margin: 5px;
+	display: inline-block;
+	vertical-align: middle;
+	font-weight: bold;
+}
+
+
+
+
+.flow_container {
+	margin-left: 40px;
+	display: flex;
+	align-items: flex-end;
+	justify-content: right;
+	flex-wrap: wrap;
+	overflow: hidden;
+}
+
+.flow_panel {
+	margin: 10px;
+    padding: 15px;
+    overflow: hidden;
+    position: relative;
+    width: 300px;
+    height: 200px;
+    border: 2px solid #666d82;
+    border-radius: 12px;
+    background-color: black;
+    transition: 0.2s;
+}
+
+.image_container {
+	height: 170px;
+	width: 300px;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+	overflow: hidden;
+	margin-bottom: 12px;
+}
+.image_container img {
+	/*display: block;
+    margin-left: auto;
+    margin-right: auto;*/
+}
+
+.image_bottext {
+	margin-top: -4px;
+	font-size: 10pt;
+	display: absolute;
+	float: left;
+	max-width: 120px;
+}
+
+.image_buttonwrapper {
+	display: absolute;
+	float: right;
+}
