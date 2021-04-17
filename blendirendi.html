@@ -114,14 +114,32 @@
                     </div>
                 </div>
 
-                <div class="flow_container">
+                <div class="flow_container" v-if="job.framestart != job.frameend">
                     <div class="flow_panel" v-for="frame in job.frames">
                         <div class="image_container">
                             <a v-bind:href="'/api/frame?id=' + job.id + '&nr=' + frame.nr" target="_blank">
-                            <image v-if="frame.status==2" v-bind:src="'/api/thumbnail?id=' + job.id + '&nr=' + frame.nr"></image></a>
+                                <image v-if="frame.status==2" v-bind:src="'/api/thumbnail?id=' + job.id + '&nr=' + frame.nr"></image>
+                            </a>
                         </div>
                         <div class="image_buttonwrapper">
-                            <button type="button" @click="action_reset_frame(frame)">redo</button>
+                            <button type="button" @click="action_reset_frame(job, frame)">redo</button>
+                            <button type="button" @click="action_skip_frame(job, frame)">skip</button>
+                            <button type="button" @click="action_download_frame(job, frame)">downl</button>
+                        </div>
+                        <div class="image_bottext">#{{frame.nr}} - stat={{frame.status}}<br>svr={{frame.renderer}}</div>
+                    </div>
+                </div>
+
+                <div class="flow_container" v-if="job.framestart == job.frameend">
+                    <div class="flow_panel_large" v-for="frame in job.frames">
+                        <div class="image_container_large">
+                            <a v-bind:href="'/api/frame?id=' + job.id + '&nr=' + frame.nr" target="_blank">
+                                <image style="width: 1010px; height: 569px; object-fit: contain" v-if="frame.status==2" v-bind:src="'/api/frame?id=' + job.id + '&nr=' + frame.nr"></image>
+                            </a>
+                        </div>
+                        <div class="image_buttonwrapper">
+                            <button type="button" @click="action_reset_frame(job, frame)">redo</button>
+                            <button type="button" @click="action_skip_frame(job, frame)">skip</button>
                             <button type="button" @click="action_download_frame(job, frame)">downl</button>
                         </div>
                         <div class="image_bottext">#{{frame.nr}} - stat={{frame.status}}<br>svr={{frame.renderer}}</div>

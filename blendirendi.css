@@ -127,20 +127,39 @@ th {
     transition: 0.2s;
 }
 
+.flow_panel_large {
+	margin: 10px;
+    padding: 15px;
+    overflow: hidden;
+    position: relative;
+    width: 1010px;
+    height: 600px;
+    border: 2px solid #666d82;
+    border-radius: 12px;
+    background-color: black;
+    transition: 0.2s;
+}
+
 .image_container {
-	height: 170px;
 	width: 300px;
+	height: 170px;
 	display: flex;
     align-items: center;
     justify-content: center;
 	overflow: hidden;
 	margin-bottom: 12px;
 }
-.image_container img {
-	/*display: block;
-    margin-left: auto;
-    margin-right: auto;*/
+
+.image_container_large {
+	width: 1010px;
+	height: 569px;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+	overflow: hidden;
+	margin-bottom: 12px;
 }
+
 
 .image_bottext {
 	margin-top: -4px;

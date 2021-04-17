@@ -1,5 +1,7 @@
+#tornado needs this or it does not run
 import asyncio
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 from bottle import route, run, template, request, response, static_file
 import os
 import shutil
@@ -11,6 +13,9 @@ import sys
 import requests
 import subprocess
 from PIL import Image
+
+
+
 
 print("blendirendi by ftobler")
 
@@ -47,11 +52,8 @@ if not is_server:
 # 0 = not rendered/reset
 # 1 = in progress
 # 2 = completed
+# 3 = disabled
 
-#status in db table job
-# 0 = in queue/reset (frames may be rendered)
-# 1 = in progress (at least one rendering right now)
-# 2 = completed (all frames comleted)
 
 
 
@@ -243,6 +245,51 @@ def index():
         db.execute("rollback transaction")
         traceback.print_exc()
         return resp_exception(str(e))
+
+#API image modification
+@route('/api/framemod', method='POST')
+def index():
+    if assertLogin():
+        return resp_exception("not logged in")
+    cursor = db.cursor()
+    try:
+        db.execute("begin transaction")
+    except:
+        pass
+    try:
+        image_id = toint(request.query["id"], default=None)
+        delete_image_file = False
+
+        if "reset" in request.query:
+            cursor.execute("update frame set status=0, renderer='', date='' where id=?", (image_id,))
+            delete_image_file = True
+        if "skip" in request.query:
+            cursor.execute("update frame set status=3, renderer='', date=''  where id=?", (image_id,))
+            delete_image_file = True
+
+        if delete_image_file:
+            cursor.execute("select idjob, nr from frame where id=?", (image_id,))
+            data = cursor.fetchone()
+            job_id = data[0]
+            frame_nr = data[1]
+            try:
+                os.remove("data/%d/%04d.png" % (job_id, frame_nr))
+            except Exception:
+                pass #might fail if the image is not present
+            try:
+                os.remove("data/%d/%04d_thumb.png" % (job_id, frame_nr))
+            except Exception:
+                pass #might fail if the image is not present
+
+        print("commit")
+        db.execute("commit transaction")
+        return json.dumps({})
+    except Exception as e:
+        print("rollback")
+        db.execute("rollback transaction")
+        traceback.print_exc()
+        return resp_exception(str(e))
+
 
 #API upload
 @route('/api/upload', method='POST')

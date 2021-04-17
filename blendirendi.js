@@ -38,7 +38,7 @@ function start() {
                 ajax({
                     type: "GET",
                     dataType: "application/json",
-                    url: "/api/job?id=" + job_id,
+                    url: "/api/job" + build_query_parameter({id: job_id}),
                     success: (data) => {
                         let parsed = JSON.parse(data)
                         this.job = parsed.job
@@ -51,7 +51,7 @@ function start() {
                 ajax({
                     type: "POST",
                     dataType: "application/json",
-                    url: "/api/delete?id=" + job.id,
+                    url: "/api/delete" + build_query_parameter({id: job.id}),
                     success: (data) => {
                         this.job = false
                         this.reload_jobs()
@@ -59,9 +59,35 @@ function start() {
                 })
             },
 
+            
+            action_reset_frame: function(job, frame) {
+                ajax({
+                    type: "POST",
+                    dataType: "application/json",
+                    url: "/api/framemod" + build_query_parameter({id: frame.id, reset: 1}),
+                    success: (data) => {
+                        this.reload_job(job.id);
+                        this.reload_jobs()
+                    },
+                })
+            },
+
+            
+            action_skip_frame: function(job, frame) {
+                ajax({
+                    type: "POST",
+                    dataType: "application/json",
+                    url: "/api/framemod" + build_query_parameter({id: frame.id, skip: 1}),
+                    success: (data) => {
+                        this.reload_job(job.id);
+                        this.reload_jobs()
+                    },
+                })
+            },
+
             action_download_frame: function(job, frame) {
                 let link = document.createElement("a");
-                link.href = "/api/frame?id=" + job.id + "&nr=" + frame.nr;
+                url: "/api/frame" + build_query_parameter({id: job.id, nr: frame.nr}),
                 link.setAttribute('download','');
                 link.click();
             },
@@ -71,7 +97,7 @@ function start() {
                 ajax({
                     type: "POST",
                     dataType: "application/json",
-                    url: "/api/jobmod?id=" + job.id + "&enable=" + job.enabled,
+                    url: "/api/jobmod" + build_query_parameter({id: job.id, enable: job.enabled}),
                     success: (data) => {
                         this.reload_job(job.id);
                         this.reload_jobs();
@@ -84,7 +110,7 @@ function start() {
                 ajax({
                     type: "POST",
                     dataType: "application/json",
-                    url: "/api/jobmod?id=" + job.id + "&priority=" + job.priority,
+                    url: "/api/jobmod" + build_query_parameter({id: job.id, priority: job.priority}),
                     success: (data) => {
                         this.reload_job(job.id);
                         this.reload_jobs();
@@ -173,4 +199,15 @@ function ajax(setting) {
 	} else {
 		request.send()
 	}
+}
+
+
+function build_query_parameter(obj) {
+    let esc = encodeURIComponent;
+    if (Object.keys(obj).length == 0) {
+        return ""
+    }
+    return "?" + Object.keys(obj)
+        .map(k => esc(k) + '=' + esc(obj[k]))
+        .join('&');
 }
