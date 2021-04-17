@@ -17,19 +17,44 @@
                     <div>
                         <p style="color:red" v-if="upload.error != ''">{{upload.error}}</p>
 
-                        <p><label>File</label><input type="file" id="myFile" name="upload"></p>
+                        <p>
+                            <label>File</label>
+                            <input type="file" id="myFile" name="upload">
+                        </p>
         
-                        <p><label>is animation</label><input type="checkbox" name="is_animation" v-model="upload.is_animation"></p>
+                        <p>
+                            <label>is animation</label>
+                            <input type="checkbox" name="is_animation" v-model="upload.is_animation">
+                        </p>
                         
-                        <p><label v-if="upload.is_animation">startframe</label><label v-if="!upload.is_animation">frame</label><input type="number" name="startframe" v-model="upload.startframe"></p>
+                        <p>
+                            <label v-if="upload.is_animation">startframe</label>
+                            <label v-if="!upload.is_animation">frame</label>
+                            <input type="number" name="startframe" v-model="upload.framestart">
+                        </p>
                         
-                        <p v-if="upload.is_animation"><label>endframe</label><input type="number" name="endframe" v-model="upload.endframe"></p>
+                        <p v-if="upload.is_animation">
+                            <label>endframe</label>
+                            <input type="number" name="endframe" v-model="upload.frameend">
+                        </p>
+
                     </div>
                     <div>
 
-                        <p><label>enable after upload</label><input type="checkbox" name="enable" v-model="upload.enable"></p>
+                        <p>
+                            <label>enable after upload</label>
+                            <input type="checkbox" name="enable" v-model="upload.enable">
+                        </p>
 
-                        <p><label>priority (higher = first)</label><input type="number" name="priority" v-model="upload.priority"></p>
+                        <p>
+                            <label>priority (higher = first)</label>
+                            <input type="number" name="priority" v-model="upload.priority">
+                        </p>
+
+                        <p>
+                            <label>required free RAM (GB)</label>
+                            <input type="number" name="memory" v-model="upload.memory">
+                        </p>
 
                         <p><label></label><input type="submit"></p>
                     </div>
@@ -55,13 +80,17 @@
                     <td style="width: 5%">{{_job.id}}</td>
                     <td style="width: 40%; font-weight: bold">{{_job.name}}</td>
                     <td style="width: 10%">{{_job | eval_frameset}}</td>
-                    <td style="width: 10%">{{_job | eval_progress}}</td>
-                    <td style="width: 10%"><input type="checkbox" class="value" v-model="_job.enabled" @click="job_save_enabled(_job)"></input></td>
-                    <td style="width: 10%">{{_job.priority}}
+                    <td style="width: 15%">
+                        <div class="progress_bar_outer">
+                            <div class="progress_bar_inner" v-bind:style="{ width: get_progress(_job) + '%'}">{{_job | eval_progress}}</div>
+                        </div>
+                    </td>
+                    <td style="width: 7%"><input type="checkbox" class="value" v-model="_job.enabled" @click="job_save_enabled(_job)"></input></td>
+                    <td style="width: 7%">{{_job.priority}}
                         <button type="button" @click="job_save_priority(_job, -1)">-</button>
                         <button type="button" @click="job_save_priority(_job, +1)">+</button>
                     </td>
-                    <td style="width: 10%">                        
+                    <td style="width: 12%">                        
                         <button type="button" @click="action_delete(_job)">delete</button>
                         <button type="button" @click="action_download_frames(_job)">downl</button>
                     </td>
@@ -102,12 +131,17 @@
                             <div class="key">progress</div>
                             <div class="value">{{job | eval_progress}}</div>
                         </div>
+
+                        <div>
+                            <div class="key">memory required</div>
+                            <div class="value">{{job.memory}}GB</div>
+                        </div>
                     </div>
                     <div>
                         <button type="button" @click="action_delete(job)">delete job</button>
                         <br>
                         <br>
-                        <button type="button" @click="action_download_frames(job)">download frames</button>
+                        <button type="button" @click="action_download_multiframe(job)">download frames</button>
                         <br>
                         <br>
                         <button type="button" @click="action_download_blend(job)">download blend</button>
@@ -126,7 +160,7 @@
                             <button type="button" @click="action_skip_frame(job, frame)">skip</button>
                             <button type="button" @click="action_download_frame(job, frame)">downl</button>
                         </div>
-                        <div class="image_bottext">#{{frame.nr}} - stat={{frame.status}}<br>svr={{frame.renderer}}</div>
+                        <div class="image_bottext">#{{frame.nr}} - stat={{frame.status | eval_status}}<br>time={{frame | eval_rendertime}}<br>svr={{frame.renderer}}</div>
                     </div>
                 </div>
 
@@ -142,7 +176,7 @@
                             <button type="button" @click="action_skip_frame(job, frame)">skip</button>
                             <button type="button" @click="action_download_frame(job, frame)">downl</button>
                         </div>
-                        <div class="image_bottext">#{{frame.nr}} - stat={{frame.status}}<br>svr={{frame.renderer}}</div>
+                        <div class="image_bottext_large">#{{frame.nr}} - stat={{frame.status | eval_status}} - time={{frame | eval_rendertime}}<br>svr={{frame.renderer}}</div>
                     </div>
                 </div>
 

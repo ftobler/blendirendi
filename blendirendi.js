@@ -14,7 +14,8 @@ function start() {
                 enable: true,
                 priority: 0,
                 valid: false,
-                error: ""
+                error: "",
+                memory: 4,
             },
             job: false
         },
@@ -59,7 +60,6 @@ function start() {
                 })
             },
 
-            
             action_reset_frame: function(job, frame) {
                 ajax({
                     type: "POST",
@@ -72,7 +72,6 @@ function start() {
                 })
             },
 
-            
             action_skip_frame: function(job, frame) {
                 ajax({
                     type: "POST",
@@ -86,10 +85,24 @@ function start() {
             },
 
             action_download_frame: function(job, frame) {
-                let link = document.createElement("a");
-                url: "/api/frame" + build_query_parameter({id: job.id, nr: frame.nr}),
-                link.setAttribute('download','');
-                link.click();
+                let link = document.createElement("a")
+                link.href = "/api/frame" + build_query_parameter({id: job.id, nr: frame.nr})
+                link.setAttribute('download', job.name.substr(0, job.name.lastIndexOf(".blend")) + "_" + pad(frame.nr, 4) + ".png")
+                link.click()
+            },
+
+            action_download_blend: function(job) {
+                let link = document.createElement("a")
+                link.href = "/api/blend" + build_query_parameter({id: job.id})
+                link.setAttribute('download', job.name)
+                link.click()
+            },
+
+            action_download_multiframe: function(job) {
+                let link = document.createElement("a")
+                link.href = "/api/multiframe" + build_query_parameter({id: job.id})
+                link.setAttribute('download', job.name.substr(0, job.name.lastIndexOf(".blend")) + ".zip")
+                link.click()
             },
 
             job_save_enabled: function(job) {
@@ -141,6 +154,10 @@ function start() {
                 e.preventDefault(); //always prevent default, because we make everything here in Js!
                 //return true
             },
+            get_progress: function(job) {
+                let total = job.count_pending + job.count_rendering + job.count_done
+                return Math.round(job.count_done / total * 1000) / 10
+            }
         },
         filters: {
             eval_frameset: function(job) {
@@ -154,6 +171,29 @@ function start() {
                 let total = job.count_pending + job.count_rendering + job.count_done
                 let progress = Math.round(job.count_done / total * 1000) / 10
                 return progress + "% (" + job.count_rendering + " rendering)"
+            },
+            eval_status: function(statusnumber) {
+                switch (statusnumber) {
+                    case 0: return "new"
+                    case 1: return "rendering"
+                    case 2: return "done"
+                    case 3: return "skip"
+                }
+                return "" + statusnumber
+            },
+            eval_rendertime: function(frame) {
+                if (frame.starttime == 0 || frame.endtime == 0) {
+                    return "---"
+                }
+                let seconds = (frame.endtime - frame.starttime) / 1000
+                if (seconds < 0) {
+                    return "---"
+                }
+                if (seconds < 60) {
+                    return Math.round(seconds) + "s"
+                }
+                let minutes = seconds / 60;
+                return Math.round(minutes) + "min"
             }
         }
     })
@@ -210,4 +250,11 @@ function build_query_parameter(obj) {
     return "?" + Object.keys(obj)
         .map(k => esc(k) + '=' + esc(obj[k]))
         .join('&');
+}
+
+
+function pad(num, size) {
+    num = num.toString();
+    while (num.length < size) num = "0" + num;
+    return num;
 }

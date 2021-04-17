@@ -13,6 +13,24 @@ import sys
 import requests
 import subprocess
 from PIL import Image
+from zipfile import ZipFile, ZipInfo
+from io import RawIOBase
+import psutil
+import socket
+import cpuinfo
+
+
+#reqired librarys:
+'''
+psutil
+Pillow (PIL)
+bottle
+tornado
+py-cpuinfo
+
+'''
+
+
 
 
 
@@ -49,11 +67,13 @@ if not is_server:
 
 
 #status in db table frame
-# 0 = not rendered/reset
-# 1 = in progress
-# 2 = completed
-# 3 = disabled
+'''
+0 = not rendered/reset
+1 = in progress
+2 = completed
+3 = disabled
 
+'''
 
 
 
@@ -134,15 +154,16 @@ def index():
             job["priority"] = row[3]
             job["framestart"] = row[4]
             job["frameend"] = row[5]
+            job["memory"] = row[6]
             job["count_pending"] = 0
             job["count_rendering"] = 0
             job["count_done"] = 0
-        if row[7] == 0:
-            job["count_pending"] = row[8]
-        elif row[7] == 1:
-            job["count_rendering"] = row[8]
-        elif row[7] == 2:
-            job["count_done"] = row[8]
+        if row[8] == 0:
+            job["count_pending"] = row[9]
+        elif row[8] == 1:
+            job["count_rendering"] = row[9]
+        elif row[8] == 2:
+            job["count_done"] = row[9]
         jobidold = jobid
     return json.dumps({"jobs":jobs})
 
@@ -168,20 +189,21 @@ def index():
             job["priority"] = row[3]
             job["framestart"] = row[4]
             job["frameend"] = row[5]
+            job["memory"] = row[6]
             job["count_pending"] = 0
             job["count_rendering"] = 0
             job["count_done"] = 0
-        if row[7] == 0:
-            job["count_pending"] = row[8]
-        elif row[7] == 1:
-            job["count_rendering"] = row[8]
-        elif row[7] == 2:
-            job["count_done"] = row[8]
+        if row[8] == 0:
+            job["count_pending"] = row[9]
+        elif row[8] == 1:
+            job["count_rendering"] = row[9]
+        elif row[8] == 2:
+            job["count_done"] = row[9]
 
     cursor.execute("select * from frame where idjob=? order by nr asc", (job_id,))
     frames = []
     for row in cursor:
-        frames.append({"id": row[0], "nr": row[2], "status": row[3], "renderer": row[4], "date": row[5]})
+        frames.append({"id": row[0], "nr": row[2], "status": row[3], "renderer": row[4], "starttime": row[5], "endtime": row[6]})
     return json.dumps({"job": job, "frames": frames})
 
 
@@ -261,10 +283,10 @@ def index():
         delete_image_file = False
 
         if "reset" in request.query:
-            cursor.execute("update frame set status=0, renderer='', date='' where id=?", (image_id,))
+            cursor.execute("update frame set status=0, renderer='' where id=?", (image_id,))
             delete_image_file = True
         if "skip" in request.query:
-            cursor.execute("update frame set status=3, renderer='', date=''  where id=?", (image_id,))
+            cursor.execute("update frame set status=3, renderer='' where id=?", (image_id,))
             delete_image_file = True
 
         if delete_image_file:
@@ -306,6 +328,7 @@ def index():
         endframe = toint(request.forms.get('endframe'), default=1)
         enable = tobool(request.forms.get('enable'), default=False)
         priority = toint(request.forms.get('priority'), default=0)
+        memory = toint(request.forms.get('memory'), default=4)
         upload = request.files.get('upload')
 
         '''print("startframe")
@@ -322,7 +345,7 @@ def index():
         if startframe > endframe:
             endframe = startframe
 
-        cursor.execute("insert into job (name, enabled, priority, framestart, frameend) values (?, ?, ?, ?, ?)", (upload.filename, enable, priority, startframe, endframe))
+        cursor.execute("insert into job (name, enabled, priority, framestart, frameend, memory) values (?, ?, ?, ?, ?, ?)", (upload.filename, enable, priority, startframe, endframe, memory))
         
         cursor.execute("select id from job order by id desc limit 1")
         job_id = cursor.fetchone()[0]
@@ -354,9 +377,10 @@ def index():
         pass
     try:
         renderer = request.query['renderer']
+        freemem = request.query['freemem']
 
         #get next edible frame job
-        cursor.execute("select job.id, frame.id, frame.nr, job.name from job, frame where job.id = frame.idjob and job.enabled=1 and (frame.status=0 or (frame.status=1 and renderer=?)) order by job.priority desc, frame.nr asc limit 1", (renderer,))
+        cursor.execute("select job.id, frame.id, frame.nr, job.name from job, frame where job.id = frame.idjob and job.enabled=1 and (frame.status=0 or (frame.status=1 and renderer=?)) and memory<=? order by job.priority desc, frame.nr asc limit 1", (renderer,freemem))
         data = cursor.fetchone()
         if data == None:
             #nothing available
@@ -369,7 +393,7 @@ def index():
             frame_nr = data[2]
             job_name = data[3]
 
-            cursor.execute("update frame set status=1, renderer=?, date=? where id=?", (renderer, current_milli_time(), frame_id))
+            cursor.execute("update frame set status=1, renderer=?, starttime=?, endtime=0 where id=?", (renderer, current_milli_time(), frame_id))
             cursor.fetchone()
 
             print("commit")
@@ -417,11 +441,11 @@ def index():
                 print("creating thumbnail failed")
             
             #mark it in db as completed
-            cursor.execute("update frame set status=2, date=? where id=?", (current_milli_time(), frame_id))
+            cursor.execute("update frame set status=2, endtime=? where id=?", (current_milli_time(), frame_id))
         else:
             #mark it in db as free
             print("client reportet some failure")
-            cursor.execute("update frame set status=0, date=? where id=?", (current_milli_time(), frame_id,))
+            cursor.execute("update frame set status=0, endtime=? where id=?", (current_milli_time(), frame_id,))
 
         print("commit")
         db.execute("commit transaction")
@@ -476,6 +500,48 @@ def index():
         traceback.print_exc()
         return resp_exception(str(e))
 
+class UnseekableStream(RawIOBase):
+    def __init__(self):
+        self._buffer = b''
+    def writable(self):
+        return True
+    def write(self, b):
+        if self.closed:
+            raise ValueError('Stream was closed!')
+        self._buffer += b
+        return len(b)
+    def get(self):
+        chunk = self._buffer
+        self._buffer = b''
+        return chunk
+
+def zipfile_generator(files, stream):
+    stream = UnseekableStream()
+    with ZipFile(stream, mode='w') as zf:
+        for file, name in files:
+            zf.write(file, arcname=name)
+            yield stream.get()
+        zf.close()
+    # ZipFile was closed.
+    yield stream.get()
+
+@route('/api/multiframe')
+def index():
+    if assertLogin():
+        return resp_exception("not logged in")
+    try:
+        job_id = toint(request.query['id'])
+        
+        searchpath = "data/%d" % job_id
+        files = [(os.path.join(searchpath, f), f) for f in os.listdir(searchpath) if os.path.isfile(os.path.join(searchpath, f)) and f.endswith(".png") and not f.endswith("_thumb.png")]
+        for file in files:
+            print(file)
+
+        return zipfile_generator(files, UnseekableStream())
+    except Exception as e:
+        traceback.print_exc()
+        return resp_exception(str(e))
+
 
 if is_server:
     run(host="localhost", port=8080, server="tornado")
@@ -518,10 +584,12 @@ def poopout(job_id, frame_nr, frame_id):
 
 
 if not is_server:
+    renderername = socket.gethostname() + " " + cpuinfo.get_cpu_info()['brand_raw']
     while True:
         try:
             print("start fetch  job")
-            respjson = json.loads(requests.post(server_url + "/api/eat?renderer=test", timeout=10).text)
+            freemem = psutil.virtual_memory()[4]/1024/1024/1024 #free memory in gigabytes
+            respjson = json.loads(requests.post(server_url + "/api/eat?renderer=%s&freemem=%f" % (renderername, freemem), timeout=10).text)
             print(respjson)
             if "exception" in respjson:
                 print("server has no job. Wait a bit")

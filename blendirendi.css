@@ -32,6 +32,10 @@ table {
 	background-color: #ad3d21;
 }
 
+tr {
+	height: 40px;
+}
+
 td {
 	border-bottom: 1px solid rgb(50,50,50);
 }
@@ -87,7 +91,7 @@ th {
 
 
 .key {
-	width: 100px;
+	width: 150px;
 	margin: 5px;
 	margin-left: 0;
 	display: inline-block;
@@ -120,11 +124,10 @@ th {
     overflow: hidden;
     position: relative;
     width: 300px;
-    height: 200px;
+    height: 235px;
     border: 2px solid #666d82;
     border-radius: 12px;
     background-color: black;
-    transition: 0.2s;
 }
 
 .flow_panel_large {
@@ -137,7 +140,6 @@ th {
     border: 2px solid #666d82;
     border-radius: 12px;
     background-color: black;
-    transition: 0.2s;
 }
 
 .image_container {
@@ -148,6 +150,7 @@ th {
     justify-content: center;
 	overflow: hidden;
 	margin-bottom: 12px;
+	position: relative;
 }
 
 .image_container_large {
@@ -164,12 +167,32 @@ th {
 .image_bottext {
 	margin-top: -4px;
 	font-size: 10pt;
-	display: absolute;
+	position: absolute;
 	float: left;
-	max-width: 120px;
+	max-width: 300px;
+}
+
+.image_bottext_large {
+	margin-top: -4px;
+	font-size: 10pt;
+	position: absolute;
+	float: left;
+	max-width: 800px;
 }
 
 .image_buttonwrapper {
 	display: absolute;
 	float: right;
+}
+
+
+.progress_bar_outer {
+	background-color: rgba(100,100,100,0.3);
+}
+
+.progress_bar_inner {
+	background-color: rgba(255,255,255,0.5);
+	padding-top: 5px;
+	padding-bottom: 5px;
+	white-space:nowrap;
 }
