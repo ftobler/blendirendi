@@ -52,39 +52,45 @@ function start() {
             },
 
             action_delete: function(job) {
-                ajax({
-                    type: "POST",
-                    dataType: "application/json",
-                    url: "/api/delete" + build_query_parameter({id: job.id}),
-                    success: (data) => {
-                        this.job = false
-                        this.reload_jobs()
-                    },
-                })
+                if (confirm("Do you really want to delete project '" + job.name + "'?")) {
+                    ajax({
+                        type: "POST",
+                        dataType: "application/json",
+                        url: "/api/delete" + build_query_parameter({id: job.id}),
+                        success: (data) => {
+                            this.job = false
+                            this.reload_jobs()
+                        },
+                    })
+                }
             },
 
             action_reset_frame: function(job, frame) {
-                ajax({
-                    type: "POST",
-                    dataType: "application/json",
-                    url: "/api/framemod" + build_query_parameter({id: frame.id, reset: 1}),
-                    success: (data) => {
-                        this.reload_job(job.id);
-                        this.reload_jobs()
-                    },
-                })
+                if (confirm("Do you really want to reset frame nr " + frame.nr + " of project '" + job.name + "'?")) {
+                    ajax({
+                        type: "POST",
+                        dataType: "application/json",
+                        url: "/api/framemod" + build_query_parameter({id: frame.id, reset: 1}),
+                        success: (data) => {
+                            this.reload_job(job.id);
+                            this.reload_jobs()
+                        },
+                    })
+                }
             },
 
             action_skip_frame: function(job, frame) {
-                ajax({
-                    type: "POST",
-                    dataType: "application/json",
-                    url: "/api/framemod" + build_query_parameter({id: frame.id, skip: 1}),
-                    success: (data) => {
-                        this.reload_job(job.id);
-                        this.reload_jobs()
-                    },
-                })
+                if (confirm("Do you really want to skip frame nr " + frame.nr + " of project '" + job.name + "'?")) {
+                    ajax({
+                        type: "POST",
+                        dataType: "application/json",
+                        url: "/api/framemod" + build_query_parameter({id: frame.id, skip: 1}),
+                        success: (data) => {
+                            this.reload_job(job.id);
+                            this.reload_jobs()
+                        },
+                    })
+                }
             },
 
             action_download_frame: function(job, frame) {
@@ -159,6 +165,9 @@ function start() {
             },
             get_progress: function(job) {
                 let total = job.count_pending + job.count_rendering + job.count_done
+                if (total == 0) {
+                    return 0
+                }
                 return Math.round(job.count_done / total * 1000) / 10
             }
         },
@@ -172,6 +181,9 @@ function start() {
             },
             eval_progress: function(job) {
                 let total = job.count_pending + job.count_rendering + job.count_done
+                if (total == 0) {
+                    return "disabled"
+                }
                 let progress = Math.round(job.count_done / total * 1000) / 10
                 if (progress == 100) {
                     return "done"

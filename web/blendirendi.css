@@ -105,7 +105,7 @@ button {
 
 
 .key {
-	width: 150px;
+	width: 180px;
 	margin: 5px;
 	margin-left: 0;
 	display: inline-block;
@@ -179,11 +179,11 @@ button {
 
 
 .image_bottext {
-	margin-top: -4px;
+	margin-top: -10px;
 	font-size: 10pt;
 	position: absolute;
 	float: left;
-	max-width: 300px;
+	max-width: 160px;
 }
 
 .image_bottext_large {

@@ -28,55 +28,22 @@ bottle (not anymore)
 tornado
 py-cpuinfo
 requests
+improve zipping of files
 
 '''
 
+#todo
+'''
+Login
+GPU/CPU detection
+what if pc cannot render eevee?
+output format
+SSL
+Automatic Client cache cleanup
+Automatic Render crash control
+multi file scenes (.zip)
 
-
-
-print("  _     _                _ _                    _ _ ")
-print(" | |   | |              | (_)                  | (_)")
-print(" | |__ | | ___ _ __   __| |_ _ __ ___ _ __   __| |_ ")
-print(" | '_ \\| |/ _ \\ '_ \\ / _` | | '__/ _ \\ '_ \\ / _` | |")
-print(" | |_) | |  __/ | | | (_| | | | |  __/ | | | (_| | |")
-print(" |_.__/|_|\\___|_| |_|\\__,_|_|_|  \\___|_| |_|\\__,_|_|")
-print("                                                    ")
-
-print("blendirendi by ftobler")
-
-is_server = False  #default mode
-server_url = "http://localhost:8080"
-blender_path = "./blender2.92/blender.exe"
-
-if len(sys.argv) >= 2:
-    if sys.argv[1] == "server":
-        is_server = True
-    if sys.argv[1] == "client":
-        is_server = False
-if is_server:
-    print("starting in SERVER mode")
-else:
-    print("starting in CLIENT mode")
-
-dbtemplate = "blendirendidefault.db"
-dblocation = "data/blendirendi.db"
-
-if is_server:
-    if not os.path.exists("data"):
-        os.makedirs("data")
-    if not os.path.exists(dblocation):
-        print("create new db")
-        shutil.copyfile(dbtemplate, dblocation)
-    db = sqlite3.connect(dblocation)
-if not is_server:
-    try:
-        shutil.rmtree("cache")
-    except:
-        traceback.print_exc()
-        pass
-    if not os.path.exists("cache"):
-        os.makedirs("cache")
-
+'''
 
 #status in db table frame
 '''
@@ -87,26 +54,104 @@ if not is_server:
 
 '''
 
+#print welcome text
+print("  _     _                _ _                    _ _ ")
+print(" | |   | |              | (_)                  | (_)")
+print(" | |__ | | ___ _ __   __| |_ _ __ ___ _ __   __| |_ ")
+print(" | '_ \\| |/ _ \\ '_ \\ / _` | | '__/ _ \\ '_ \\ / _` | |")
+print(" | |_) | |  __/ | | | (_| | | | |  __/ | | | (_| | |")
+print(" |_.__/|_|\\___|_| |_|\\__,_|_|_|  \\___|_| |_|\\__,_|_|")
+print("                                                    ")
+print("blendirendi by ftobler")
 
 
+#initialize config file
+config_file = open("blendirendi.json", "r")
+settings = json.load(config_file)
+config_file.close()
+
+
+#some global main configuration
+is_server = False  #default mode
+server_url = "http://localhost:8080"
+blender_path = "./blender2.92/blender.exe"
+port = 8080
+listen = "0.0.0.0"
+
+server_url   = settings["client"]["server_url"]
+blender_path = settings["client"]["blender_path"]
+port         = settings["server"]["port"]
+listen       = settings["server"]["listen"]
+
+
+
+
+
+
+
+#fetch client/server mode from arguments
+if len(sys.argv) >= 2:
+    if sys.argv[1] == "server":
+        is_server = True
+    if sys.argv[1] == "client":
+        is_server = False
+if is_server:
+    print("starting in SERVER mode")
+else:
+    print("starting in CLIENT mode")
+
+
+#initialization stuff to do in SERVER mode
+if is_server:
+    dbtemplate = "blendirendidefault.db"
+    dblocation = "data/blendirendi.db"
+    if not os.path.exists("data"):
+        os.makedirs("data")
+    if not os.path.exists(dblocation):
+        print("create new db")
+        shutil.copyfile(dbtemplate, dblocation)
+    db = sqlite3.connect(dblocation)
+
+    
+#initialization stuff to do in CLIENT mode
+if not is_server:
+    try:
+        shutil.rmtree("cache")
+    except:
+        traceback.print_exc()
+        pass
+    if not os.path.exists("cache"):
+        os.makedirs("cache")
+
+
+#return the current epoch milliseconds
 def current_milli_time():
     return round(time.time() * 1000)
 
+
+#handle the login. Currently does nothing
 def assertLogin():
     print("request incoming")
     #session = request.get_cookie("sessionid")
     #print(session)
     return False
 
+
+#handle server exception
+#sends predefined error format out
 def resp_exception(reason):
     return json.dumps({"exception":reason})
 
+
+#convert a string to integer with a default
 def toint(str, default=0):
     try:
         return int(str)
     except Exception:
         return default
 
+
+#convert a string to inteboolean ger with a default
 def tobool(str, default=False):
     print(str)
     try:
@@ -119,26 +164,22 @@ def tobool(str, default=False):
         pass
     return default
 
-#serve start page
+#bottle web handler
+#serve (static) start page
 @route('/')
 def home():
-    return static_file("blendirendi.html", root='.')
+    return static_file("blendirendi.html", root='web')
 
-#serve a generic file
+
+#bottle web handler
+#serve a generic (static) file
 @route('/<name>')
 def home(name):
-    return static_file(name, root='.')
-
-#examples
-@route('/hello/<name>')
-def index(name):
-    return template('<b>Hello {{name}}</b>!', name=name)
-
-        
+    return static_file(name, root='web')
 
 
-
-#API jobs
+#bottle web api handler
+#get list of all current jobs
 @route('/api/jobs')
 def index():
     if assertLogin():
@@ -180,7 +221,8 @@ def index():
     return json.dumps({"jobs":jobs})
 
 
-#API jobs
+#bottle web api handler
+#get detail of a job
 @route('/api/job')
 def index():
     if assertLogin():
@@ -219,7 +261,8 @@ def index():
     return json.dumps({"job": job, "frames": frames})
 
 
-#API delete
+#bottle web api handler
+#delete a job
 @route('/api/delete', method='POST')
 def index():
     if assertLogin():
@@ -250,7 +293,8 @@ def index():
         return resp_exception(str(e))
 
 
-#API job modification
+#bottle web api handler
+#modify a job
 @route('/api/jobmod', method='POST')
 def index():
     if assertLogin():
@@ -280,7 +324,9 @@ def index():
         traceback.print_exc()
         return resp_exception(str(e))
 
-#API image modification
+
+#bottle web api handler
+#modify a image
 @route('/api/framemod', method='POST')
 def index():
     if assertLogin():
@@ -325,7 +371,8 @@ def index():
         return resp_exception(str(e))
 
 
-#API upload
+#bottle web api handler
+#upload new job
 @route('/api/upload', method='POST')
 def index():
     if assertLogin():
@@ -378,6 +425,8 @@ def index():
         return resp_exception(str(e))
 
 
+#bottle web api handler
+#render node get new job (eat blend)
 @route('/api/eat', method='POST')
 def index():
     if assertLogin():
@@ -418,6 +467,8 @@ def index():
         return resp_exception(str(e))
 
 
+#bottle web api handler
+#render node finish and upload a frame (poop out frame)
 @route('/api/poop', method='POST')
 def index():
     if assertLogin():
@@ -469,6 +520,8 @@ def index():
         return resp_exception(str(e))
 
 
+#bottle web api handler
+#serve the blend file of a job
 @route('/api/blend')
 def index():
     if assertLogin():
@@ -485,6 +538,9 @@ def index():
         traceback.print_exc()
         return resp_exception(str(e))
 
+
+#bottle web api handler
+#serve a rendered image file
 @route('/api/frame')
 def index():
     if assertLogin():
@@ -498,7 +554,9 @@ def index():
         traceback.print_exc()
         return resp_exception(str(e))
 
-        
+
+#bottle web api handler
+#serve a thumbnail of rendered image file
 @route('/api/thumbnail')
 def index():
     if assertLogin():
@@ -512,6 +570,9 @@ def index():
         traceback.print_exc()
         return resp_exception(str(e))
 
+
+#helper class for zipping file
+#implements a stream which the ZIP object can write to instead of a file on disk
 class UnseekableStream(RawIOBase):
     def __init__(self):
         self._buffer = b''
@@ -527,16 +588,36 @@ class UnseekableStream(RawIOBase):
         self._buffer = b''
         return chunk
 
+
+#helper function for zipping file
+#generates (yield) the zip file
 def zipfile_generator(files, stream):
     stream = UnseekableStream()
     with ZipFile(stream, mode='w') as zf:
         for file, name in files:
             zf.write(file, arcname=name)
             yield stream.get()
-        zf.close()
     # ZipFile was closed.
     yield stream.get()
 
+
+#helper function for zipping file
+#generates (yield) the zip file
+def zipfile_generator2(files, stream):
+    with ZipFile(stream, mode='w') as zf:
+        for path, name in files:
+            z_info = ZipInfo.from_file(path, arcname=name)
+            with open(path, 'rb') as entry, zf.open(z_info, mode='w') as dest:
+                for chunk in iter(lambda: entry.read(16384), b''):
+                    dest.write(chunk)
+                    # Yield chunk of the zip file stream in bytes.
+                    yield stream.get()
+    # ZipFile was closed.
+    yield stream.get()
+
+
+#bottle web api handler
+#download all frames of a job as ZIP file
 @route('/api/multiframe')
 def index():
     if assertLogin():
@@ -549,19 +630,22 @@ def index():
         for file in files:
             print(file)
 
-        return zipfile_generator(files, UnseekableStream())
+        return zipfile_generator2(files, UnseekableStream())
     except Exception as e:
         traceback.print_exc()
         return resp_exception(str(e))
 
 
+#Server specific logic
 if is_server:
     run(host="0.0.0.0", port=8080, server="tornado")
 
 
+#################################################################################################################
 
-#mostly client suff after this line
 
+#downloads the job .blend file to disk if needed
+#if already present the file will not be downloaded again.
 def cache_blend(job_id, job_name):
     local_directory = "cache/%d" % job_id
     local_blendname = "cache/%d/%s" % (job_id, job_name)
@@ -581,6 +665,9 @@ def cache_blend(job_id, job_name):
                     #if chunk: 
                     f.write(chunk)
 
+
+#client finished a frame
+#uploads this frame to server
 def poopout(job_id, frame_nr, frame_id):
     local_framename = "cache/%d/%04d.png" % (job_id, frame_nr)
     if os.path.exists(local_framename):
@@ -595,6 +682,8 @@ def poopout(job_id, frame_nr, frame_id):
         time.sleep(60)
 
 
+#Client specific logic
+#main client working loop
 if not is_server:
     renderername = socket.gethostname() + " " + cpuinfo.get_cpu_info()['brand_raw']
     while True:
@@ -614,6 +703,10 @@ if not is_server:
                 cache_blend(job_id, job_name)
                 path_to_blend = "cache/%d/%s" % (job_id, job_name)
                 blender_output_path = os.path.abspath("cache/%d/" %(job_id)) + "/"
+                #Blender Engine Listing:
+                #    BLENDER_EEVEE
+                #    BLENDER_WORKBENCH
+                #    CYCLES
                 command = "%s -P setgpu.py -b %s -E CYCLES -o %s -f %d" % (blender_path, path_to_blend, blender_output_path, frame_nr)
                 print(command)
                 subprocess.run(command) #waits until comleted
