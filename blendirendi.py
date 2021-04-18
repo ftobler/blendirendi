@@ -24,9 +24,10 @@ import cpuinfo
 '''
 psutil
 Pillow (PIL)
-bottle
+bottle (not anymore)
 tornado
 py-cpuinfo
+requests
 
 '''
 
@@ -555,7 +556,7 @@ def index():
 
 
 if is_server:
-    run(host="localhost", port=8080, server="tornado")
+    run(host="0.0.0.0", port=8080, server="tornado")
 
 
 
