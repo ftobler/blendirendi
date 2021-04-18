@@ -47,6 +47,20 @@ th {
 	background-color: rgb(20,20,20);
 }
 
+input {
+	color: white;
+	background-color: rgb(30,30,30);
+	border: 1px solid gray;
+	border-radius: 4px;
+	height: 25px;
+}
+button {
+	color: black;
+	background-color: gray;
+	border: 1px solid white;
+	border-radius: 4px;
+	height: 25px;
+}
 
 
 
@@ -196,3 +210,17 @@ th {
 	padding-bottom: 5px;
 	white-space:nowrap;
 }
+
+.footer {
+	margin: 10px;
+	padding: 10px;
+	padding-left: 15px;
+	display: block;
+	color: gray;
+	line-height: 1.6;
+}
+
+.footer a{
+	color: gray;
+}
+

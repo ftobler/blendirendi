@@ -21,6 +21,9 @@ function start() {
         },
         created() {
             this.reload_jobs()
+            setInterval(() => {
+                this.reload_jobs()
+            }, 60*1000)
         },
         methods: {
             reload_jobs: function() {
@@ -170,6 +173,15 @@ function start() {
             eval_progress: function(job) {
                 let total = job.count_pending + job.count_rendering + job.count_done
                 let progress = Math.round(job.count_done / total * 1000) / 10
+                if (progress == 100) {
+                    return "done"
+                }
+                if (job.enabled == false) {
+                    return "disabled"
+                }
+                if (progress == 0 && job.count_rendering == 0) {
+                    return "waiting"
+                }
                 return progress + "% (" + job.count_rendering + " rendering)"
             },
             eval_status: function(statusnumber) {
@@ -182,18 +194,25 @@ function start() {
                 return "" + statusnumber
             },
             eval_rendertime: function(frame) {
-                if (frame.starttime == 0 || frame.endtime == 0) {
+                if (frame.starttime == 0) {
                     return "---"
                 }
-                let seconds = (frame.endtime - frame.starttime) / 1000
+                let starttime = frame.starttime
+                let endtime = frame.endtime
+                let running = ""
+                if (endtime == 0) {
+                    endtime = new Date().getTime()
+                    running = "+"
+                }
+                let seconds = (endtime - starttime) / 1000
                 if (seconds < 0) {
                     return "---"
                 }
                 if (seconds < 60) {
-                    return Math.round(seconds) + "s"
+                    return Math.round(seconds) + "s" + running
                 }
                 let minutes = seconds / 60;
-                return Math.round(minutes) + "min"
+                return Math.round(minutes) + "min" + running
             }
         }
     })

@@ -33,7 +33,13 @@ py-cpuinfo
 
 
 
-
+print("  _     _                _ _                    _ _ ")
+print(" | |   | |              | (_)                  | (_)")
+print(" | |__ | | ___ _ __   __| |_ _ __ ___ _ __   __| |_ ")
+print(" | '_ \\| |/ _ \\ '_ \\ / _` | | '__/ _ \\ '_ \\ / _` | |")
+print(" | |_) | |  __/ | | | (_| | | | |  __/ | | | (_| | |")
+print(" |_.__/|_|\\___|_| |_|\\__,_|_|_|  \\___|_| |_|\\__,_|_|")
+print("                                                    ")
 
 print("blendirendi by ftobler")
 
@@ -62,6 +68,11 @@ if is_server:
         shutil.copyfile(dbtemplate, dblocation)
     db = sqlite3.connect(dblocation)
 if not is_server:
+    try:
+        shutil.rmtree("cache")
+    except:
+        traceback.print_exc()
+        pass
     if not os.path.exists("cache"):
         os.makedirs("cache")
 
@@ -380,7 +391,7 @@ def index():
         freemem = request.query['freemem']
 
         #get next edible frame job
-        cursor.execute("select job.id, frame.id, frame.nr, job.name from job, frame where job.id = frame.idjob and job.enabled=1 and (frame.status=0 or (frame.status=1 and renderer=?)) and memory<=? order by job.priority desc, frame.nr asc limit 1", (renderer,freemem))
+        cursor.execute("select job.id, frame.id, frame.nr, job.name from job, frame where job.id = frame.idjob and job.enabled=1 and (frame.status=0 or (frame.status=1 and renderer=?)) and memory<=? order by job.priority desc, job.id asc, frame.nr asc limit 1", (renderer,freemem))
         data = cursor.fetchone()
         if data == None:
             #nothing available
