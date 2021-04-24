@@ -35,10 +35,8 @@ requests
 '''
 Login
 GPU/CPU detection
-what if pc cannot render eevee?
 output format
 SSL
-Automatic Client cache cleanup
 Automatic Render crash control
 multi file scenes (.zip)
 rename job file
