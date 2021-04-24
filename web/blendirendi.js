@@ -15,6 +15,7 @@ function start() {
                 priority: 0,
                 valid: false,
                 error: "",
+                info: "",
                 memory: 4,
             },
             job: false
@@ -152,14 +153,15 @@ function start() {
                 console.log(e)
                 let formdata = new FormData(e.srcElement)
                 this.upload.error = ""
-                fetch('/api/upload', {method: "POST", body: formdata}).then(data => {
-                    console.log(data)
-                    let decoded = data.json()
-                    if (decoded.exception != undefined) {
-                        this.upload.error = decoded.exception
+                this.upload.info = "uploading.. please wait."
+                fetch('/api/upload', {method: "POST", body: formdata}).then(response => response.json()).then((json) => {
+                    this.upload.info = ""
+                    console.log(json)
+                    if (json.exception != undefined) {
+                        this.upload.error = json.exception
                     }
                     this.reload_jobs()
-                });
+                })
                 e.preventDefault(); //always prevent default, because we make everything here in Js!
                 //return true
             },
@@ -230,7 +232,8 @@ function start() {
                 return Math.round(minutes) + "min" + running
             },
             eval_dateformat: function(millis) {
-                return new Date(millis).toISOString().replace("T", " ").slice(0, -5).replaceAll("-", "/")
+                millis = millis - new Date().getTimezoneOffset()*60*1000
+                return new Date(millis).toISOString().replace("T", " ").slice(0, -8).replaceAll("-", "/")
             }
         }
     })

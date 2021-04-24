@@ -41,7 +41,6 @@ SSL
 Automatic Client cache cleanup
 Automatic Render crash control
 multi file scenes (.zip)
-timestamp
 rename job file
 
 '''
@@ -113,7 +112,7 @@ if is_server:
         shutil.copyfile(dbtemplate, dblocation)
     db = sqlite3.connect(dblocation)
 
-    
+
 #initialization stuff to do in CLIENT mode
 if not is_server:
     try:
@@ -402,7 +401,7 @@ def index():
         if startframe > endframe:
             endframe = startframe
 
-        cursor.execute("insert into job (name, enabled, priority, framestart, frameend, memory) values (?, ?, ?, ?, ?, ?)", (upload.filename, enable, priority, startframe, endframe, memory))
+        cursor.execute("insert into job (name, enabled, priority, framestart, frameend, memory, starttime) values (?, ?, ?, ?, ?, ?, ?)", (upload.filename, enable, priority, startframe, endframe, memory, current_milli_time()))
         
         cursor.execute("select id from job order by id desc limit 1")
         job_id = cursor.fetchone()[0]
@@ -411,6 +410,7 @@ def index():
             cursor.execute("insert into frame (idjob, nr) values (?, ?)", (job_id, framenr))
 
         os.makedirs("data/%d" % (job_id,))
+        print("save uploaded new job file")
         upload.save("data/%d/%s" % (job_id, upload.filename))
 
         db.execute("commit transaction")
@@ -479,7 +479,7 @@ def index():
 
         if success:
             #save the uploaded file
-            print("save the uploaded file")
+            print("save the uploaded frame file")
             upload = request.files.get('upload')
             cursor.execute("select idjob, nr from frame where id=?", (frame_id,))
             data = cursor.fetchone()
@@ -500,6 +500,7 @@ def index():
             
             #mark it in db as completed
             cursor.execute("update frame set status=2, endtime=? where id=?", (current_milli_time(), frame_id))
+            cursor.execute("update job set endtime=? where id in (select job.id as id from frame, job where job.id=? and frame.idjob=job.id and frame.status>=2)", (current_milli_time(), job_id))
         else:
             #mark it in db as free
             print("client reportet some failure")
@@ -674,12 +675,31 @@ def poopout(job_id, frame_nr, frame_id):
         time.sleep(60)
 
 
+#automatically emptys cache after some time
+last_cache_cleanup = current_milli_time()
+def do_cache_cleanup_if_need():
+    global last_cache_cleanup
+    now = current_milli_time()
+    if now - last_cache_cleanup > 1000*60*60*3:
+        searchpath = "cache"
+        dirs = [os.path.join(searchpath, f) for f in os.listdir(searchpath) if os.path.isdir(os.path.join(searchpath, f))]
+        for d in dirs:
+            try:
+                print("delete: '%s'", d)
+                shutil.rmtree(d)
+            except Exception:
+                pass
+        last_cache_cleanup = now
+
+
+
 #Client specific logic
 #main client working loop
 if not is_server:
     renderername = socket.gethostname() + " " + cpuinfo.get_cpu_info()['brand_raw']
     while True:
         try:
+            do_cache_cleanup_if_need()
             print("start fetch  job")
             freemem = psutil.virtual_memory()[4]/1024/1024/1024 #free memory in gigabytes
             respjson = json.loads(requests.post(server_url + "/api/eat?renderer=%s&freemem=%f" % (renderername, freemem), timeout=10).text)
