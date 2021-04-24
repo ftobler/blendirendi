@@ -138,6 +138,16 @@
                             <div class="key">memory required</div>
                             <div class="value">{{job.memory}}GB</div>
                         </div>
+                        
+                        <div v-if="job.starttime">
+                            <div class="key">start time</div>
+                            <div class="value">{{job.starttime | eval_dateformat}}</div>
+                        </div>
+
+                        <div v-if="job.endtime">
+                            <div class="key">end time</div>
+                            <div class="value">{{job.endtime | eval_dateformat}}</div>
+                        </div>
                     </div>
                     <div>
                         <button type="button" @click="action_delete(job)">delete job</button>
@@ -154,7 +164,7 @@
                     <div class="flow_panel" v-for="frame in job.frames">
                         <div class="image_container">
                             <a v-bind:href="'/api/frame?id=' + job.id + '&nr=' + frame.nr" target="_blank">
-                                <image v-if="frame.status==2" v-bind:src="'/api/thumbnail?id=' + job.id + '&nr=' + frame.nr"></image>
+                                <image v-if="frame.status==2" v-bind:src="'/api/thumbnail?id=' + job.id + '&nr=' + frame.nr" loading="lazy"></image>
                             </a>
                         </div>
                         <div class="image_bottext">#{{frame.nr}} - status={{frame.status | eval_status}}<br>time={{frame | eval_rendertime}}<br>svr={{frame.renderer}}</div>

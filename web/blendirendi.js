@@ -1,6 +1,6 @@
 function start() {
 
-    var app = new Vue({
+    app = new Vue({
         el: '#app',
         data: {
             active_upload: true,
@@ -176,7 +176,7 @@ function start() {
                 if (job.framestart == job.frameend) {
                     return "single " + job.framestart
                 } else {
-                    return job.framestart  + "-" + job.frameend + " (" + (job.frameend - job.framestart) + "pcs)"
+                    return job.framestart  + "-" + job.frameend + " (" + (job.frameend - job.framestart + 1) + "pcs)"
                 }
             },
             eval_progress: function(job) {
@@ -194,7 +194,10 @@ function start() {
                 if (progress == 0 && job.count_rendering == 0) {
                     return "waiting"
                 }
-                return progress + "% (" + job.count_rendering + " rendering)"
+                if (job.count_rendering > 0) {
+                    return progress + "% (" + job.count_rendering + " rendering)" 
+                }
+                return progress + "%"
             },
             eval_status: function(statusnumber) {
                 switch (statusnumber) {
@@ -225,6 +228,9 @@ function start() {
                 }
                 let minutes = seconds / 60;
                 return Math.round(minutes) + "min" + running
+            },
+            eval_dateformat: function(millis) {
+                return new Date(millis).toISOString().replace("T", " ").slice(0, -5).replaceAll("-", "/")
             }
         }
     })

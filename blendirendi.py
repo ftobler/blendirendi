@@ -28,7 +28,6 @@ bottle (not anymore)
 tornado
 py-cpuinfo
 requests
-improve zipping of files
 
 '''
 
@@ -42,6 +41,8 @@ SSL
 Automatic Client cache cleanup
 Automatic Render crash control
 multi file scenes (.zip)
+timestamp
+rename job file
 
 '''
 
@@ -131,7 +132,7 @@ def current_milli_time():
 
 #handle the login. Currently does nothing
 def assertLogin():
-    print("request incoming")
+    #print("request incoming")
     #session = request.get_cookie("sessionid")
     #print(session)
     return False
@@ -153,7 +154,6 @@ def toint(str, default=0):
 
 #convert a string to inteboolean ger with a default
 def tobool(str, default=False):
-    print(str)
     try:
         str = str.lower()
         if str=="on" or str=="true" or str=="1" or str=="yes":
@@ -208,15 +208,17 @@ def index():
             job["framestart"] = row[4]
             job["frameend"] = row[5]
             job["memory"] = row[6]
+            job["starttime"] = row[7]
+            job["endtime"] = row[8]
             job["count_pending"] = 0
             job["count_rendering"] = 0
             job["count_done"] = 0
-        if row[8] == 0:
-            job["count_pending"] = row[9]
-        elif row[8] == 1:
-            job["count_rendering"] = row[9]
-        elif row[8] == 2:
-            job["count_done"] = row[9]
+        if row[10] == 0:
+            job["count_pending"] = row[11]
+        elif row[10] == 1:
+            job["count_rendering"] = row[11]
+        elif row[10] == 2:
+            job["count_done"] = row[11]
         jobidold = jobid
     return json.dumps({"jobs":jobs})
 
@@ -244,15 +246,17 @@ def index():
             job["framestart"] = row[4]
             job["frameend"] = row[5]
             job["memory"] = row[6]
+            job["starttime"] = row[7]
+            job["endtime"] = row[8]
             job["count_pending"] = 0
             job["count_rendering"] = 0
             job["count_done"] = 0
-        if row[8] == 0:
-            job["count_pending"] = row[9]
-        elif row[8] == 1:
-            job["count_rendering"] = row[9]
-        elif row[8] == 2:
-            job["count_done"] = row[9]
+        if row[10] == 0:
+            job["count_pending"] = row[11]
+        elif row[10] == 1:
+            job["count_rendering"] = row[11]
+        elif row[10] == 2:
+            job["count_done"] = row[11]
 
     cursor.execute("select * from frame where idjob=? order by nr asc", (job_id,))
     frames = []
@@ -282,8 +286,6 @@ def index():
         except:
             traceback.print_exc()
             pass
-        
-        print("commit")
         db.execute("commit transaction")
         return json.dumps({})
     except Exception as e:
@@ -314,8 +316,6 @@ def index():
             prority = toint(request.query["priority"])
             print(job_id)
             cursor.execute("update job set priority=? where id=?", (prority, job_id))
-        
-        print("commit")
         db.execute("commit transaction")
         return json.dumps({})
     except Exception as e:
@@ -360,8 +360,6 @@ def index():
                 os.remove("data/%d/%04d_thumb.png" % (job_id, frame_nr))
             except Exception:
                 pass #might fail if the image is not present
-
-        print("commit")
         db.execute("commit transaction")
         return json.dumps({})
     except Exception as e:
@@ -415,7 +413,6 @@ def index():
         os.makedirs("data/%d" % (job_id,))
         upload.save("data/%d/%s" % (job_id, upload.filename))
 
-        print("commit")
         db.execute("commit transaction")
         return json.dumps({})
     except Exception as e:
@@ -445,7 +442,6 @@ def index():
         data = cursor.fetchone()
         if data == None:
             #nothing available
-            print("commit")
             db.execute("commit transaction")
             return json.dumps({"exception":"no job available"})
         else:
@@ -457,7 +453,6 @@ def index():
             cursor.execute("update frame set status=1, renderer=?, starttime=?, endtime=0 where id=?", (renderer, current_milli_time(), frame_id))
             cursor.fetchone()
 
-            print("commit")
             db.execute("commit transaction")
             return json.dumps({"job_id": job_id, "frame_id": frame_id, "frame_nr": frame_nr, "job_name": job_name})
     except Exception as e:
@@ -510,7 +505,6 @@ def index():
             print("client reportet some failure")
             cursor.execute("update frame set status=0, endtime=? where id=?", (current_milli_time(), frame_id,))
 
-        print("commit")
         db.execute("commit transaction")
         return json.dumps({})
     except Exception as e:
@@ -627,8 +621,6 @@ def index():
         
         searchpath = "data/%d" % job_id
         files = [(os.path.join(searchpath, f), f) for f in os.listdir(searchpath) if os.path.isfile(os.path.join(searchpath, f)) and f.endswith(".png") and not f.endswith("_thumb.png")]
-        for file in files:
-            print(file)
 
         return zipfile_generator2(files, UnseekableStream())
     except Exception as e:
