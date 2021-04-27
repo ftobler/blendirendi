@@ -629,7 +629,7 @@ def index():
 
 #Server specific logic
 if is_server:
-    run(host="0.0.0.0", port=8080, server="tornado")
+    run(host=listen, port=port, server="tornado")
 
 
 #################################################################################################################
