@@ -1,12 +1,50 @@
+@font-face {
+	font-family: "Roboto";
+	src: url('Roboto-Regular.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Roboto";
+	src: url('Roboto-Bold.ttf');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'material_icons';
+	font-style: normal;
+	font-weight: 400;
+	src: url(materialsymbolsoutlined.woff2) format('woff2');
+}
+
+.material {
+	font-family: 'material_icons';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 16px;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	-webkit-font-feature-settings: 'liga';
+	-webkit-font-smoothing: antialiased;
+}
+
+
 html {
 	height: 100%;
 }
 
 body {
 	margin: 20px;
-	font-family: Arial, Tahoma, Helvetica, sans-serif;
-	color: white;
-	background-color: black;
+	font-family: "Roboto", Arial, Helvetica, sans-serif;
+	color: rgb(190, 190, 190);
+	background-color: #202020;
 }
 
 label {
@@ -20,11 +58,11 @@ h1, h2, h3 {
 	font-weight: bold;
 }
 h1 {
-	margin-left: 30px;
+	margin-left: 21px;
+    color: white;
 }
 
 table {
-	
 	border-collapse: collapse;
 }
 
@@ -43,8 +81,8 @@ td {
 th {
     text-align: left;
     width: 150px;
-	border-bottom: 1px solid rgb(50,50,50);
-	background-color: rgb(20,20,20);
+	border-bottom: 1px solid rgb(100,100,100);
+	/* background-color: rgb(20,20,20); */
 }
 
 input {
@@ -54,12 +92,24 @@ input {
 	border-radius: 4px;
 	height: 25px;
 }
+input[type="checkbox"] {
+	border: 0px;
+}
+
 button {
 	color: black;
 	background-color: gray;
-	border: 1px solid white;
+	border: 0px solid rgb(0, 0, 0);
 	border-radius: 4px;
 	height: 25px;
+	margin: 1px;
+}
+button.material {
+	font-size: 18px;
+    padding: 1px;
+    height: 28px;
+    width: 28px;
+	vertical-align: sub;
 }
 
 
@@ -67,27 +117,37 @@ button {
 /* custom page elements */
 
 .content {
-	max-width: 1200px;
+	min-width: 750px;
+	max-width: 1400px;
 	margin-left: auto;
 	margin-right: auto;
 }
 
 .panel {
-	margin: 10px;
-	padding: 10px;
-	padding-left: 15px;
+	margin-bottom: 20px;
+	padding: 20px;
 	display: block;
-	border: 2px solid white;
-	border-radius: 12px;
+	border: 1px solid white;
+	/* border-radius: 12px; */
+	background-color: #151515;
 }
 .panel.green {
-	border: 2px solid #73AD21 !important;
+	border: 1px solid #73AD21 !important;
 }
 .panel.red {
-	border: 2px solid #ad3d21 !important;
+	border: 1px solid #ad3d21 !important;
 }
 .panel.blue {
-	border: 2px solid #2152ad !important;
+	border: 1px solid #2152ad !important;
+}
+.green > h2 {
+	color: #73AD21;
+}
+.red > h2 {
+	color: #ad3d21;
+}
+.blue > h2 {
+	color: #2152ad;
 }
 
 .gridWrap {
@@ -98,10 +158,10 @@ button {
 
 
 
-.button {
+/* .button {
     height: 20px;
     background-color: gray;
-}
+} */
 
 
 .key {
@@ -110,7 +170,6 @@ button {
 	margin-left: 0;
 	display: inline-block;
 	vertical-align: middle;
-	color: gray;
 }
 
 .value {
@@ -124,24 +183,24 @@ button {
 
 
 .flow_container {
-	margin-left: 40px;
+	margin: -10px;
 	display: flex;
 	align-items: flex-end;
-	justify-content: right;
+	justify-content: center;
 	flex-wrap: wrap;
 	overflow: hidden;
 }
 
 .flow_panel {
 	margin: 10px;
-    padding: 15px;
+    padding: 10px;
     overflow: hidden;
     position: relative;
     width: 300px;
-    height: 235px;
-    border: 2px solid #666d82;
-    border-radius: 12px;
-    background-color: black;
+    height: 240px;
+    /* border: 1px solid #666d82; */
+    /* border-radius: 12px; */
+    /* background-color: black; */
 }
 
 .flow_panel_large {
@@ -151,9 +210,9 @@ button {
     position: relative;
     width: 1010px;
     height: 600px;
-    border: 2px solid #666d82;
-    border-radius: 12px;
-    background-color: black;
+    /* border: 1px solid #666d82; */
+    /* border-radius: 12px; */
+    /* background-color: black; */
 }
 
 .image_container {
@@ -165,6 +224,7 @@ button {
 	overflow: hidden;
 	margin-bottom: 12px;
 	position: relative;
+	background-color: #0e0e0e;
 }
 
 .image_container_large {
@@ -202,21 +262,35 @@ button {
 
 .progress_bar_outer {
 	background-color: rgba(100,100,100,0.3);
+	border-radius: 4px;
+	overflow: hidden;
+	position: relative;
+    height: 30px;
+	color: white;
 }
 
 .progress_bar_inner {
+	position: absolute;
 	background-color: rgba(255,255,255,0.5);
+    height: 30px;
+}
+
+.progress_bar_text {
+	position: absolute;
+	background-color: transparent;
+	width: 100%;
 	padding-top: 5px;
 	padding-bottom: 5px;
-	white-space:nowrap;
+	white-space: nowrap;
+    text-align: center;
 }
 
 .footer {
-	margin: 10px;
+	/* margin: 10px; */
 	padding: 10px;
 	padding-left: 15px;
 	display: block;
-	color: gray;
+	/* color: gray; */
 	line-height: 1.6;
 }
 

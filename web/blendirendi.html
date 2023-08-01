@@ -9,9 +9,9 @@
 </head>
 <body  onload="start()">
     <div id="app" class="content">
-        
+
         <h1>blendirendi</h1>
-        
+
         <div class="panel green">
             <h2 @click="active_upload = !active_upload">upload</h2>
             <form id="upload_form" v-if="active_upload" action="/api/upload" method="post" @submit="check_form" target="hidden-iframe">
@@ -24,19 +24,19 @@
                             <div class="key">File</div>
                             <div class="value"><input type="file" id="myFile" name="upload"></div>
                         </div>
-                        
-        
+
+
                         <div>
                             <div class="key">is animation</div>
                             <div class="value"><input type="checkbox" name="is_animation" v-model="upload.is_animation"></div>
                         </div>
-                        
+
                         <div>
                             <div class="key" v-if="upload.is_animation">startframe</div>
                             <div class="key"v-if="!upload.is_animation">frame</div>
                             <div class="value"><input type="number" name="startframe" v-model="upload.framestart"></div>
                         </div>
-                        
+
                         <div v-if="upload.is_animation">
                             <div class="key">endframe</div>
                             <div class="value"><input type="number" name="endframe" v-model="upload.frameend"></div>
@@ -70,43 +70,44 @@
             <iframe name="hidden-iframe" style="display: none;"></iframe>
         </div>
 
-        
+
         <div class="panel red">
             <h2 @click="active_jobs = !active_jobs">jobs</h2>
             <table v-if="active_jobs">
-                <tr>        
+                <tr>
                     <th>name</th>
                     <th>frameset</th>
                     <th>progress</th>
-                    <th>enable</th>
+                    <th style="padding-left:20px">enable</th>
                     <th style="padding-left:20px">priority</th>
                     <th>action</th>
                 </tr>
                 <tr v-for="_job in jobs" @click="action_job_click(_job)" v-bind:class="{ 'tableActive' : _job.id == job.id }">
-                    <td style="width: 40%; font-weight: bold">{{_job.name}}</td>
+                    <td style="width: 35%; font-weight: bold">{{_job.name}}</td>
                     <td style="width: 10%">{{_job | eval_frameset}}</td>
                     <td style="width: 15%">
                         <div class="progress_bar_outer">
-                            <div class="progress_bar_inner" v-bind:style="{ width: get_progress(_job) + '%'}">{{_job | eval_progress}}</div>
+                            <div class="progress_bar_inner" v-bind:style="{ width: get_progress(_job) + '%'}"></div>
+                            <div class="progress_bar_text">{{_job | eval_progress}}</div>
                         </div>
                     </td>
                     <td style="width: 7%; padding-left: 15px;">
                         <input type="checkbox" class="value" v-model="_job.enabled" @click="job_save_enabled(_job)"></input>
                     </td>
-                    <td style="width: 10%">
+                    <td style="width: 15%">
                         <span style="width: 30px; display: inline-block; text-align: right;">{{_job.priority}}</span>
-                        <button type="button" @click="job_save_priority(_job, -1)">-</button>
-                        <button type="button" @click="job_save_priority(_job, +1)">+</button>
+                        <button type="button" class="material" @click="job_save_priority(_job, -1)" title="decrement priority">remove</button>
+                        <button type="button" class="material" @click="job_save_priority(_job, +1)" title="increment priority">add</button>
                     </td>
-                    <td style="width: 12%">                        
-                        <button type="button" @click="action_delete(_job)">delete</button>
-                        <button type="button" @click="action_download_multiframe(_job)">downl</button>
+                    <td style="width: 12%">
+                        <button type="button" class="material" @click="action_delete(_job)" title="Delete Job">delete</button>
+                        <button type="button" class="material" @click="action_download_multiframe(_job)" title="Download Files">download</button>
                     </td>
                 </tr>
             </table>
         </div>
-        
-        
+
+
         <div class="panel blue">
             <h2 @click="active_job = !active_job">job detail <span style="color: #2152ad">{{job.name}}</span></h2>
             <div v-if="active_job && job">
@@ -121,8 +122,8 @@
                         <div>
                             <div class="key">priority</div>
                             <div class="value">{{job.priority}}</div>
-                            <button type="button" @click="job_save_priority(job, -1)">-</button>
-                            <button type="button" @click="job_save_priority(job, +1)">+</button>
+                            <button type="button" class="material" @click="job_save_priority(job, -1)">remove</button>
+                            <button type="button" class="material" @click="job_save_priority(job, +1)">add</button>
                         </div>
 
                         <div>
@@ -139,7 +140,7 @@
                             <div class="key">memory required</div>
                             <div class="value">{{job.memory}}GB</div>
                         </div>
-                        
+
                         <div v-if="job.starttime">
                             <div class="key">start time</div>
                             <div class="value">{{job.starttime | eval_dateformat}}</div>
@@ -200,7 +201,7 @@
             <br>
             source on <a href="https://github.com/ftobler/blendirendi">github.com/ftobler/blendirendi</a>
             <br>
-            by ftobler, 2021
+            by ftobler, 2023
         </div>
     </div>
 </body>

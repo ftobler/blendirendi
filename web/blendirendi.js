@@ -38,7 +38,7 @@ function start() {
                 })
             },
 
-            
+
             reload_job: function(job_id) {
                 ajax({
                     type: "GET",
@@ -142,8 +142,13 @@ function start() {
             },
 
             action_job_click: function(job) {
-                this.active_job = true
-                this.reload_job(job.id)
+                if (this.job.id !== job.id) {
+                    this.active_job = true
+                    this.reload_job(job.id)
+                } else {
+                    this.job = false;
+                    this.active_job = false
+                }
             },
 
             check_form: function(e) {
@@ -176,9 +181,9 @@ function start() {
         filters: {
             eval_frameset: function(job) {
                 if (job.framestart == job.frameend) {
-                    return "single " + job.framestart
+                    return "#" + job.framestart
                 } else {
-                    return job.framestart  + "-" + job.frameend + " (" + (job.frameend - job.framestart + 1) + "pcs)"
+                    return job.framestart  + "-" + job.frameend
                 }
             },
             eval_progress: function(job) {
@@ -246,7 +251,7 @@ function start() {
 ajax({
 	    type: "GET",
 	    url: "/something",
-		success: (data) => {                        
+		success: (data) => {
 	    },
 	    dataType: "application/json"
 	})
