@@ -70,7 +70,7 @@ config_file.close()
 
 
 #some global main configuration
-is_server = False  #default mode
+is_server = True  #default mode is server
 server_url = "http://localhost:8080"
 blender_path = "./blender2.92/blender.exe"
 port = 8080
