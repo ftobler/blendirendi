@@ -76,6 +76,7 @@ body {
 	font-family: "Roboto", Arial, Helvetica, sans-serif;
 	color: rgb(190, 190, 190);
 	background-color: #202020;
+	font-size: 12pt;
 }
 
 label {
@@ -93,6 +94,13 @@ h1 {
     margin-left: 20px;
     color: white;
     margin-bottom: 15px;
+    font-size: 24pt;
+}
+h2 {
+    font-size: 18pt;
+}
+br {
+	height: 20px;
 }
 
 table {
@@ -225,6 +233,7 @@ button.material {
 	vertical-align: middle;
 	font-weight: bold;
 	height: 28px;
+	width: 160px;
 }
 
 
