@@ -224,8 +224,8 @@ button.material {
 }
 
 .flow_panel {
-	margin: 5px;
-    padding: 6px;
+	margin: 10px;
+    padding: 10px;
     overflow: hidden;
     position: relative;
     width: 300px;
