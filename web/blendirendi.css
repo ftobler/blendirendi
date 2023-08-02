@@ -383,19 +383,8 @@ button.material {
 }
 
 
-
-/* .upload_form {
-	border: 2px dashed #6b6a6a;
-    border-radius: 10px;
-	/* height: 150px; */
-/*}
-.upload_form > * {
-	/* display: none; */
-	/*color: red;
-} */
-
 .upload_form {
-	min-height: 152px;
+	min-height: 154px;
 	position: relative;
 }
 
