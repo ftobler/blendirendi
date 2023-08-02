@@ -55,8 +55,9 @@ html {
 	scrollbar-gutter: stable;
 }
 
+
 body {
-	margin: 20px;
+	margin: 0;
 	font-family: "Roboto", Arial, Helvetica, sans-serif;
 	color: rgb(190, 190, 190);
 	background-color: #202020;
@@ -151,6 +152,7 @@ button.material {
 /* custom page elements */
 
 .content {
+	margin: 20px;
 	min-width: 750px;
 	max-width: 1400px;
 	margin-left: auto;
@@ -213,7 +215,7 @@ button.material {
 
 
 .flow_container {
-	margin: -10px;
+	margin: -15px;
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
@@ -222,8 +224,8 @@ button.material {
 }
 
 .flow_panel {
-	margin: 10px;
-    padding: 10px;
+	margin: 5px;
+    padding: 6px;
     overflow: hidden;
     position: relative;
     width: 300px;
@@ -395,6 +397,79 @@ button.material {
     padding-top: 61px;
 	text-align: center;
 }
-.upload_form_content {
-	//position: absolute;
+
+
+
+
+
+
+.viewer {
+	/* position: relative; */
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-color: black;
+}
+
+.viewer_image {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	/* display: flex; */
+	align-items: center;
+	justify-content: center;
+}
+
+.viewer_button {
+	position: absolute;
+	top: 0;
+	right: 0;
+
+	font-family: 'material_icons';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 30px;
+	line-height: 1;
+
+	padding: 10px;
+
+	background-color: #30303078;
+}
+.viewer_button:hover {
+	color: white;
+}
+
+.viewer_center {
+	position: absolute;
+	top: 0;
+    left: calc(50% - 150px);
+	width: 300px;
+	text-align: center;
+	background-color: #30303078;
+}
+
+.viewer_arrow {
+	font-family: 'material_icons';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 30px;
+	line-height: 1;
+	padding: 10px;
+}
+.viewer_arrow:hover {
+	color: white;
+}
+.viewer_arrow_left {
+    float: left;
+}
+.viewer_number {
+	/* width: 100px; */
+	display: inline-block;
+    margin: 14px;
+}
+.viewer_arrow_right {
+    float: right;
 }

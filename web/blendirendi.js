@@ -6,6 +6,8 @@ function start() {
             active_upload: true,
             active_jobs: true,
             active_job: true,
+            active_viewer: false,
+            viewer_frame: null,
             jobs: [],
             upload: {
                 is_animation: false,
@@ -252,6 +254,29 @@ function start() {
                     this.dragging = false;
                     this.dropped_file = event.dataTransfer.files[0]
                 });
+            },
+
+            viewer_start: function(job, frame) {
+                this.active_viewer = true
+                this.viewer_frame = frame
+                document.getElementsByTagName('html')[0].style.scrollbarGutter = "initial"
+            },
+
+            viewer_exit: function() {
+                this.active_viewer = false
+                document.getElementsByTagName('html')[0].style.scrollbarGutter = "stable"
+            },
+
+            viewer_nav: function(increment) {
+                var index = this.job.frames.indexOf(this.viewer_frame) + increment;
+                var new_frame = this.job.frames[index]
+                if (new_frame != undefined) {
+                    this.viewer_frame = new_frame
+                }
+            },
+
+            viewer_wheel: function(event) {
+                this.viewer_nav(event.deltaY > 0 ? 1 : -1)
             }
         },
         filters: {
@@ -278,7 +303,7 @@ function start() {
                     return "waiting"
                 }
                 if (job.count_rendering > 0) {
-                    return progress + "% (" + job.count_rendering + " active)" 
+                    return progress + "% (" + job.count_rendering + " active)"
                 }
                 return progress + "%"
             },
