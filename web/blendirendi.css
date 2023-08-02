@@ -222,6 +222,7 @@ button.material {
 	display: inline-block;
 	vertical-align: middle;
 	font-weight: bold;
+	height: 28px;
 }
 
 
@@ -384,7 +385,7 @@ button.material {
 
 
 .upload_form {
-	min-height: 154px;
+    height: 160px;
 	position: relative;
 }
 
