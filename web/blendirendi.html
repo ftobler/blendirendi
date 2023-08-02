@@ -16,6 +16,7 @@
 
         <div class="panel green">
             <h2 @click="active_upload = !active_upload">upload<div class="material" v-if="!active_upload">expand_more</div></h2>
+            <br  v-if="active_upload">
             <form id="upload_form" class="upload_form" v-if="active_upload" action="/api/upload" method="post" @submit="check_form" target="hidden-iframe">
                 <div class="upload_form_drag" v-if="dragging">
                     drop *.blend file here.
@@ -80,6 +81,7 @@
 
         <div class="panel red">
             <h2 @click="active_jobs = !active_jobs">jobs<div class="material" v-if="!active_jobs">expand_more</div></h2>
+            <br  v-if="active_jobs">
             <table v-if="active_jobs">
                 <tr class="select">
                     <th>name</th>
@@ -117,6 +119,7 @@
 
         <div class="panel blue">
             <h2 @click="active_job = !active_job">job detail <span style="color: white">{{job.name}}</span><div class="material" v-if="!active_job">expand_more</div></h2>
+            <br  v-if="active_job && job">
             <div v-if="active_job && job">
                 <div class="gridWrap">
 

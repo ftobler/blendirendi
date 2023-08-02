@@ -59,6 +59,8 @@
 h2 > .material {
 	font-size: 32px;
     vertical-align: middle;
+	margin-top: -4px;
+	margin-bottom: -4px;
 }
 
 
@@ -84,7 +86,7 @@ label {
 h1, h2, h3 {
 	font-family: "REM", Arial, Helvetica, sans-serif;
 	margin: 0;
-	margin-bottom: 10px;
+	/* margin-bottom: 10px; */
 	font-weight: bold;
 }
 h1 {
