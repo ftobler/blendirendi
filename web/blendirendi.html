@@ -13,56 +13,61 @@
         <h1>blendirendi</h1>
 
         <div class="panel green">
-            <h2 @click="active_upload = !active_upload">upload</h2>
-            <form id="upload_form" v-if="active_upload" action="/api/upload" method="post" @submit="check_form" target="hidden-iframe">
-                <div class="gridWrap">
-                    <div>
-                        <p style="color:red" v-if="upload.error != ''">{{upload.error}}</p>
-                        <p style="color:#73ad21" v-if="upload.info != ''">{{upload.info}}</p>
+            <h2 @click="active_upload = !active_upload">upload<div class="material" v-if="!active_upload">expand_more</div></h2>
+            <form id="upload_form" class="upload_form" v-if="active_upload" action="/api/upload" method="post" @submit="check_form" target="hidden-iframe">
+                <div class="upload_form_drag" v-if="dragging">
+                    drop *.blend file here.
+                </div>
+                <div class="upload_form_content" v-if="!dragging">
 
-                        <div>
-                            <div class="key">File</div>
-                            <div class="value"><input type="file" id="myFile" name="upload"></div>
-                        </div>
+                    <p class="error" v-if="upload.error != ''">{{upload.error}}</p>
+                    <p class="info" v-if="upload.info != ''">{{upload.info}}</p>
 
-
-                        <div>
-                            <div class="key">is animation</div>
-                            <div class="value"><input type="checkbox" name="is_animation" v-model="upload.is_animation"></div>
-                        </div>
-
-                        <div>
-                            <div class="key" v-if="upload.is_animation">startframe</div>
-                            <div class="key"v-if="!upload.is_animation">frame</div>
-                            <div class="value"><input type="number" name="startframe" v-model="upload.framestart"></div>
-                        </div>
-
-                        <div v-if="upload.is_animation">
-                            <div class="key">endframe</div>
-                            <div class="value"><input type="number" name="endframe" v-model="upload.frameend"></div>
-                        </div>
-
+                    <div v-if="!dropped_file">
+                        <div class="key">File</div>
+                        <div class="value"><input type="file" id="myFile" name="upload"></div>
                     </div>
-                    <div>
-
+                    <div v-if="dropped_file">
+                        <div class="key">dropped File</div>
+                        <div class="value">{{dropped_file.name}} <button class="material" type="button" @click="dropped_file = null">delete</button></div>
+                    </div>
+                    <div class="gridWrap">
                         <div>
-                            <div class="key">enable after upload</div>
-                            <div class="value"><input type="checkbox" name="enable" v-model="upload.enable"></div>
+                            <div>
+                                <div class="key">is animation</div>
+                                <div class="value"><input type="checkbox" name="is_animation" v-model="upload.is_animation"></div>
+                            </div>
+
+                            <div>
+                                <div class="key" v-if="upload.is_animation">startframe</div>
+                                <div class="key"v-if="!upload.is_animation">frame</div>
+                                <div class="value"><input type="number" name="startframe" v-model="upload.framestart"></div>
+                            </div>
+
+                            <div v-if="upload.is_animation">
+                                <div class="key">endframe</div>
+                                <div class="value"><input type="number" name="endframe" v-model="upload.frameend"></div>
+                            </div>
+
                         </div>
-
                         <div>
-                            <div class="key">priority (higher = first)</div>
-                            <div class="value"><input type="number" name="priority" v-model="upload.priority"></div>
-                        </div>
 
-                        <div>
-                            <div class="key">required free RAM (GB)</div>
-                            <div class="value"><input type="number" name="memory" v-model="upload.memory"></div>
-                        </div>
+                            <div>
+                                <div class="key">priority (high = first)</div>
+                                <div class="value"><input type="number" name="priority" v-model="upload.priority"></div>
+                            </div>
 
-                        <div>
-                            <div class="key"></div>
-                            <div class="value" style="float: right"><button type="submit">Submit</button></div>
+                            <div>
+                                <div class="key">required RAM (GB)</div>
+                                <div class="value"><input type="number" name="memory" v-model="upload.memory"></div>
+                            </div>
+
+                            <div>
+                                <div class="key">enable job</div>
+                                <div class="value"><input type="checkbox" name="enable" v-model="upload.enable"></div>
+                                <div class="value" style="float: right"><button type="submit">Submit</button></div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -72,9 +77,9 @@
 
 
         <div class="panel red">
-            <h2 @click="active_jobs = !active_jobs">jobs</h2>
+            <h2 @click="active_jobs = !active_jobs">jobs<div class="material" v-if="!active_jobs">expand_more</div></h2>
             <table v-if="active_jobs">
-                <tr>
+                <tr class="select">
                     <th>name</th>
                     <th>frameset</th>
                     <th>progress</th>
@@ -83,8 +88,8 @@
                     <th>action</th>
                 </tr>
                 <tr v-for="_job in jobs" @click="action_job_click(_job)" v-bind:class="{ 'tableActive' : _job.id == job.id }">
-                    <td style="width: 35%; font-weight: bold">{{_job.name}}</td>
-                    <td style="width: 10%">{{_job | eval_frameset}}</td>
+                    <td class="select" style="width: 35%; font-weight: bold">{{_job.name}}</td>
+                    <td class="select" style="width: 10%">{{_job | eval_frameset}}</td>
                     <td style="width: 15%">
                         <div class="progress_bar_outer">
                             <div class="progress_bar_inner" v-bind:style="{ width: get_progress(_job) + '%'}"></div>
@@ -109,11 +114,11 @@
 
 
         <div class="panel blue">
-            <h2 @click="active_job = !active_job">job detail <span style="color: #2152ad">{{job.name}}</span></h2>
+            <h2 @click="active_job = !active_job">job detail <span style="color: white">{{job.name}}</span><div class="material" v-if="!active_job">expand_more</div></h2>
             <div v-if="active_job && job">
                 <div class="gridWrap">
 
-                    <div>
+                    <div class="select">
                         <div>
                             <div class="key">enable</div>
                             <input type="checkbox" class="value" v-model="job.enabled" @click="job_save_enabled(job)"></input>
@@ -152,6 +157,8 @@
                         </div>
                     </div>
                     <div>
+                        <br>
+                        <br>
                         <button type="button" @click="action_delete(job)">delete job</button>
                         <br>
                         <br>
@@ -162,6 +169,7 @@
                     </div>
                 </div>
 
+                <!-- multi frame job -->
                 <div class="flow_container" v-if="job.framestart != job.frameend">
                     <div class="flow_panel" v-for="frame in job.frames">
                         <div class="image_container">
@@ -169,15 +177,16 @@
                                 <image v-if="frame.status==2" v-bind:src="'/api/thumbnail?id=' + job.id + '&nr=' + frame.nr" loading="lazy"></image>
                             </a>
                         </div>
-                        <div class="image_bottext">#{{frame.nr}} - status={{frame.status | eval_status}}<br>time={{frame | eval_rendertime}}<br>svr={{frame.renderer}}</div>
+                        <div class="image_bottext select">#{{frame.nr}} - status={{frame.status | eval_status}}<br>time={{frame | eval_rendertime}}<br>svr={{frame.renderer}}</div>
                         <div class="image_buttonwrapper">
-                            <button type="button" @click="action_reset_frame(job, frame)">redo</button>
-                            <button type="button" @click="action_skip_frame(job, frame)">skip</button>
-                            <button type="button" @click="action_download_frame(job, frame)">downl</button>
+                            <button type="button" class="material" @click="action_reset_frame(job, frame)" title="Reset Image">replay</button>
+                            <button type="button" class="material" @click="action_skip_frame(job, frame)" title="Skip Rendering Image">keyboard_double_arrow_right</button>
+                            <button type="button" class="material" @click="action_download_frame(job, frame)" title="Download Image">download</button>
                         </div>
                     </div>
                 </div>
 
+                <!-- single frame job -->
                 <div class="flow_container" v-if="job.framestart == job.frameend">
                     <div class="flow_panel_large" v-for="frame in job.frames">
                         <div class="image_container_large">
@@ -185,18 +194,18 @@
                                 <image style="width: 1010px; height: 569px; object-fit: contain" v-if="frame.status==2" v-bind:src="'/api/frame?id=' + job.id + '&nr=' + frame.nr"></image>
                             </a>
                         </div>
-                        <div class="image_bottext_large">#{{frame.nr}} - status={{frame.status | eval_status}} - time={{frame | eval_rendertime}}<br>server={{frame.renderer}}</div>
+                        <div class="image_bottext_large select">#{{frame.nr}} - status={{frame.status | eval_status}} - time={{frame | eval_rendertime}}<br>server={{frame.renderer}}</div>
                         <div class="image_buttonwrapper">
-                            <button type="button" @click="action_reset_frame(job, frame)">redo</button>
-                            <button type="button" @click="action_skip_frame(job, frame)">skip</button>
-                            <button type="button" @click="action_download_frame(job, frame)">downl</button>
+                            <button type="button" class="material" @click="action_reset_frame(job, frame)" title="Reset Image">replay</button>
+                            <button type="button" class="material" @click="action_skip_frame(job, frame)" title="Skip Rendering Image">keyboard_double_arrow_right</button>
+                            <button type="button" class="material" @click="action_download_frame(job, frame)" title="Download Image">download</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="footer">
+        <div class="footer select">
             blendirendi is a distributed Blender render farm
             <br>
             source on <a href="https://github.com/ftobler/blendirendi">github.com/ftobler/blendirendi</a>

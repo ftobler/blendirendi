@@ -400,7 +400,7 @@ def index():
             endframe = startframe
 
         cursor.execute("insert into job (name, enabled, priority, framestart, frameend, memory, starttime) values (?, ?, ?, ?, ?, ?, ?)", (upload.filename, enable, priority, startframe, endframe, memory, current_milli_time()))
-        
+
         cursor.execute("select id from job order by id desc limit 1")
         job_id = cursor.fetchone()[0]
 
@@ -495,7 +495,7 @@ def index():
             except Exception:
                 traceback.print_exc()
                 print("creating thumbnail failed")
-            
+
             #mark it in db as completed
             cursor.execute("update frame set status=2, endtime=? where id=?", (current_milli_time(), frame_id))
             cursor.execute("update job set endtime=? where id in (select job.id as id from frame, job where job.id=? and frame.idjob=job.id and frame.status>=2)", (current_milli_time(), job_id))
@@ -617,7 +617,7 @@ def index():
         return resp_exception("not logged in")
     try:
         job_id = toint(request.query['id'])
-        
+
         searchpath = "data/%d" % job_id
         files = [(os.path.join(searchpath, f), f) for f in os.listdir(searchpath) if os.path.isfile(os.path.join(searchpath, f)) and f.endswith(".png") and not f.endswith("_thumb.png")]
 
@@ -653,7 +653,7 @@ def cache_blend(job_id, job_name):
                 for chunk in r.iter_content(chunk_size=8192):
                     # If you have chunk encoded response uncomment if
                     # and set chunk_size parameter to None.
-                    #if chunk: 
+                    #if chunk:
                     f.write(chunk)
 
 

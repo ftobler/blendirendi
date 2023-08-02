@@ -18,13 +18,19 @@ function start() {
                 info: "",
                 memory: 4,
             },
-            job: false
+            job: false,
+            dragging: false,
+            dropped_file: null,
         },
         created() {
             this.reload_jobs()
             setInterval(() => {
                 this.reload_jobs()
             }, 60*1000)
+        },
+        mounted() {
+            //after DOM create
+            this.setup_drag_drop_listeners()
         },
         methods: {
             reload_jobs: function() {
@@ -37,7 +43,6 @@ function start() {
                     },
                 })
             },
-
 
             reload_job: function(job_id) {
                 ajax({
@@ -157,6 +162,10 @@ function start() {
                 }
                 console.log(e)
                 let formdata = new FormData(e.srcElement)
+                console.log(formdata)
+                if (this.dropped_file != null) {
+                    formdata.append("upload", this.dropped_file)
+                }
                 this.upload.error = ""
                 this.upload.info = "uploading.. please wait."
                 fetch('/api/upload', {method: "POST", body: formdata}).then(response => response.json()).then((json) => {
@@ -169,13 +178,56 @@ function start() {
                 })
                 e.preventDefault(); //always prevent default, because we make everything here in Js!
                 //return true
+                this.dropped_file = null //clear the dropped file for next time
+                document.getElementById("myFile").value = ""
             },
+
             get_progress: function(job) {
                 let total = job.count_pending + job.count_rendering + job.count_done
                 if (total == 0) {
                     return 0
                 }
                 return Math.round(job.count_done / total * 1000) / 10
+            },
+
+            setup_drag_drop_listeners: function() {
+                const id = "upload_form"
+                // const dashclass = "upload_form"
+                let ele = document.getElementById(id)
+
+                // Event listener for the dragenter event
+                ele.addEventListener("dragenter", (event) => {
+                    event.preventDefault()
+                    // ele.classList.add(dashclass)
+                    // console.log("dragenter")
+                    this.dragging = true;
+                });
+                // Event listener for the dragleave event
+                ele.addEventListener("dragleave", (event) => {
+                    event.preventDefault()
+                    // ele.classList.remove(dashclass)
+                    // console.log("dragleave")
+                    this.dragging = false;
+                });
+                // Event listener for the dragover event
+                ele.addEventListener("dragover", (event) => {
+                    event.preventDefault()
+                    // ele.classList.add(dashclass)
+                    // console.log("dragover")
+                    this.dragging = true;
+                });
+                // Event listener for the drop event
+                ele.addEventListener("drop", (event) => {
+                    event.preventDefault()
+                    // Get the files that were dropped
+                    var files = event.dataTransfer.files
+                    console.log(files)
+                    // Upload the files to the server
+                    // ...
+                    console.log("drop")
+                    this.dragging = false;
+                    this.dropped_file = event.dataTransfer.files[0]
+                });
             }
         },
         filters: {
