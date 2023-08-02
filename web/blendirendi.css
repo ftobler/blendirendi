@@ -19,6 +19,15 @@
 	src: url(materialsymbolsoutlined.woff2) format('woff2');
 }
 
+@font-face {
+	font-family: 'REM';
+	font-style: normal;
+	font-weight: 400;
+	src: url(REM-Regular.woff2) format('woff2');
+}
+
+
+
 .material {
 	font-family: 'material_icons';
 	font-weight: normal;
@@ -59,13 +68,15 @@ label {
 }
 
 h1, h2, h3 {
+	font-family: "REM", Arial, Helvetica, sans-serif;
 	margin: 0;
 	margin-bottom: 10px;
 	font-weight: bold;
 }
 h1 {
-	margin-left: 21px;
+    margin-left: 20px;
     color: white;
+    margin-bottom: 15px;
 }
 
 table {
@@ -79,6 +90,9 @@ table {
 
 tr {
 	height: 40px;
+}
+tr:hover:not(.tableActive) {
+	background-color: #ad3e2218;
 }
 
 td {
