@@ -120,6 +120,30 @@ function start() {
                 link.click()
             },
 
+            action_download_all_files: function(job) {
+                var jobs = []
+                job.frames.forEach((frame) => {
+                    if (frame.status == 2) {
+                        jobs.push(frame.nr)
+                    }
+                })
+                console.log(jobs)
+
+                downloadFilesSequentially(job, jobs)
+                    .then(() => {
+                        console.log('All files downloaded successfully!');
+                    })
+                    .catch((error) => {
+                        console.error('Error during download:', error);
+                    });
+
+
+                // let link = document.createElement("a")
+                // link.href = "/api/multiframe" + build_query_parameter({id: job.id})
+                // link.setAttribute('download', job.name.substr(0, job.name.lastIndexOf(".blend")) + ".zip")
+                // link.click()
+            },
+
             job_save_enabled: function(job) {
                 job.enabled = !job.enabled
                 ajax({
@@ -254,7 +278,7 @@ function start() {
                     return "waiting"
                 }
                 if (job.count_rendering > 0) {
-                    return progress + "% (" + job.count_rendering + " rendering)" 
+                    return progress + "% (" + job.count_rendering + " active)" 
                 }
                 return progress + "%"
             },
@@ -354,4 +378,38 @@ function pad(num, size) {
     num = num.toString();
     while (num.length < size) num = "0" + num;
     return num;
+}
+
+function downloadFilesSequentially(job, nrs) {
+    var nr = nrs.shift()
+    return fetch("/api/frame" + build_query_parameter({id: job.id, nr: nr}))
+        .then(response => response.blob())
+        .then(blob => {
+            const fileName = job.name.replace(".blend", "_" + formatNumber(nr) + ".png")
+            downloadBlob(blob, fileName);
+            if (nrs.length) {
+                return downloadFilesSequentially(job, nrs)
+            }
+        });
+}
+
+function downloadBlob(blob, fileName) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(a.href);
+    document.body.removeChild(a);
+}
+
+function formatNumber(number) {
+    // Convert the number to a string.
+    let strNumber = String(number);
+    // Calculate the number of leading zeros needed.
+    let leadingZeros = 4 - strNumber.length;
+    // Pad the string with leading zeros.
+    let formattedNumber = "0".repeat(leadingZeros) + strNumber;
+    return formattedNumber;
 }
