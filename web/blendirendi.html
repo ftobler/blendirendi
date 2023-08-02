@@ -6,7 +6,7 @@
     <script src="blendirendi.js"></script>
     <link rel="stylesheet" href="blendirendi.css">
     <html lang="en"></html>
-    <meta name="viewport" content="width=800, initial-scale=1.0">
+    <meta name="viewport" content="width=750, initial-scale=1.0">
 </head>
 <body onload="start()">
     <div id="app">
@@ -101,7 +101,7 @@
                         </div>
                     </td>
                     <td style="width: 7%; padding-left: 15px;">
-                        <input type="checkbox" class="value" v-model="_job.enabled" @click="job_save_enabled(_job)"></input>
+                        <input type="checkbox" v-model="_job.enabled" @click="job_save_enabled(_job)"></input>
                     </td>
                     <td style="width: 15%">
                         <span style="width: 30px; display: inline-block; text-align: right;">{{_job.priority}}</span>
