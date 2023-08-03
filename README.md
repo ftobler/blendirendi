@@ -17,19 +17,20 @@ Features:
 * Drag and drop upload
 * Built-in image viewer
 * Reset/skip frames feature
+* server-side disk usage monitoring
 
 
 Limitations:
 
-* Output format must be .png.
-* Limited error handling if a client can't render the scene for any reason (it might get stuck)
-* Denoising breaks clients running in some VMs
+* Output format must be *.png.
+* Rendering Engine must be Cycles.
+* Limited error handling if a client can't render the scene for any reason (it might get stuck and try again later indefinetly)
+* Denoising breaks clients running in some VMs. If possible you need to enable SSE4.1. (e.g in Proxmox enable 'HostType')
 * Each frame is rendered in full by a client; no image stacking.
 * *.zip file download might break the server if the archive gets too big
 * No client management from the web GUI
 * No user login
 * Manual configuration needed in *.json file
-* No server-side disk usage monitoring
 
 Under the hood:
 
