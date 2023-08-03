@@ -9,6 +9,7 @@ function start() {
             active_viewer: false,
             viewer_frame: null,
             jobs: [],
+            disk: [],
             upload: {
                 is_animation: false,
                 framestart: 1,
@@ -41,7 +42,9 @@ function start() {
                     dataType: "application/json",
                     url: "/api/jobs",
                     success: (data) => {
-                        this.jobs = JSON.parse(data).jobs
+                        var dat = JSON.parse(data)
+                        this.jobs = dat.jobs
+                        this.disk = dat.disk
                     },
                 })
             },
@@ -257,6 +260,7 @@ function start() {
             },
 
             viewer_start: function(job, frame) {
+                this.job = job //should not be needed at most instances, because the job is already set
                 this.active_viewer = true
                 this.viewer_frame = frame
                 document.getElementsByTagName('html')[0].style.scrollbarGutter = "initial"
@@ -354,7 +358,10 @@ function start() {
                     return mb.toFixed(1) + "MB"
                 }
                 gb = mb / 1024
-                return gb.toFixed(2) + "GB"
+                if (gb < 10) {
+                    return gb.toFixed(2) + "GB"
+                }
+                return gb.toFixed(1) + "GB"
             }
         }
     })

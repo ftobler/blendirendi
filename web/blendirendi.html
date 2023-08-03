@@ -12,6 +12,9 @@
     <div id="app">
     <div class="content" v-if="active_viewer == false">
 
+        <div class="disk_usage_outer">disk available: {{disk[2] | eval_filesize}}
+            <div class="disk_usage_progress"><div class="disk_usage_progress_inner" v-bind:style="{'width': disk[1] / disk[0] * 100 + '%'}"></div></div>
+        </div>
         <h1>blendirendi</h1>
 
         <div class="panel green">
@@ -235,7 +238,7 @@
         <div class="viewer_blur_load" v-bind:style="{ 'background-image': 'url(/api/thumbnail?id=' + job.id + '&nr=' + viewer_frame.nr + ')' }">
             <image v-if="viewer_frame.status==2" class="viewer_image" v-bind:src="'/api/frame?id=' + job.id + '&nr=' + viewer_frame.nr" loading="lazy"></image>
         </div>
-        
+
         <div class="viewer_button" @click="viewer_exit()">close</div>
         <div class="viewer_center">
             <div class="viewer_arrow viewer_arrow_left" @click="viewer_nav(-1)">navigate_before</div>

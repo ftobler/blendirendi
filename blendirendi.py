@@ -228,7 +228,11 @@ def index():
         elif row[10] == 2:
             job["count_done"] = row[11]
         jobidold = jobid
-    return json.dumps({"jobs":jobs})
+    jso = {
+        "jobs": jobs,
+        "disk": shutil.disk_usage(".")
+    }
+    return json.dumps(jso)
 
 
 #bottle web api handler
