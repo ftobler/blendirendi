@@ -17,14 +17,14 @@
         <div class="panel green">
             <h2 @click="active_upload = !active_upload">upload<div class="material" v-if="!active_upload">expand_more</div></h2>
             <br  v-if="active_upload">
+            <p class="error" v-if="upload.error != ''">{{upload.error}}</p>
+            <p class="info" v-if="upload.info != ''">{{upload.info}}</p>
             <form id="upload_form" class="upload_form" v-if="active_upload" action="/api/upload" method="post" @submit="check_form" target="hidden-iframe">
                 <div class="upload_form_drag" v-if="dragging">
                     drop *.blend file here.
                 </div>
                 <div class="upload_form_content" v-if="!dragging">
 
-                    <p class="error" v-if="upload.error != ''">{{upload.error}}</p>
-                    <p class="info" v-if="upload.info != ''">{{upload.info}}</p>
 
                     <div v-if="!dropped_file">
                         <div class="key">File</div>
@@ -159,6 +159,16 @@
                         <div v-if="job.endtime">
                             <div class="key">end time</div>
                             <div class="value">{{job.endtime | eval_dateformat}}</div>
+                        </div>
+
+                        <div>
+                            <div class="key">job total size</div>
+                            <div class="value">{{job.folder_size | eval_filesize}}</div>
+                        </div>
+
+                        <div>
+                            <div class="key">blend file size</div>
+                            <div class="value">{{job.blend_size | eval_filesize}}</div>
                         </div>
                     </div>
                     <div>

@@ -340,6 +340,21 @@ function start() {
             eval_dateformat: function(millis) {
                 millis = millis - new Date().getTimezoneOffset()*60*1000
                 return new Date(millis).toISOString().replace("T", " ").slice(0, -8).replaceAll("-", "/")
+            },
+            eval_filesize: function(bytes) {
+                if (bytes < 512) {
+                    return ""+bytes + "B"
+                }
+                kb = bytes / 1024
+                if (kb < 512) {
+                    return kb.toFixed(1) + "kB"
+                }
+                mb = kb / 1024
+                if (mb < 512) {
+                    return mb.toFixed(1) + "MB"
+                }
+                gb = mb / 1024
+                return gb.toFixed(2) + "GB"
             }
         }
     })
