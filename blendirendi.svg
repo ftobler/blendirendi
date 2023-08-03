@@ -26,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.03832"
-     inkscape:cx="268.05707"
+     inkscape:cx="124.22759"
      inkscape:cy="210.74111"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -45,7 +45,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -65,13 +65,15 @@
            x="19.445436"
            y="42.077038" /></flowRegion><flowPara
          id="flowPara4524" /></flowRoot>    <path
-       style="fill:#000000;stroke:none;stroke-width:0.75590551;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 0.37890625 -0.37890625 L 0.37890625 377.57422 L 378.33008 377.57422 L 378.33008 -0.37890625 L 0.37890625 -0.37890625 z M 23.060547 22.810547 L 355.64844 22.810547 L 355.64844 354.38672 L 23.060547 354.38672 L 23.060547 22.810547 z "
+       style="fill:#ff7f2a;stroke:none;stroke-width:0.75590551;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 0.37890625,-0.37890625 V 377.57422 H 378.33008 V -0.37890625 Z"
        id="rect4568"
-       transform="matrix(0.26458333,0,0,0.26458333,0,197)" />
+       transform="matrix(0.26458333,0,0,0.26458333,0,197)"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:82.90314484px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#abc837;fill-opacity:1;stroke:none;stroke-width:2.07257867;"
+       style="font-style:normal;font-weight:normal;font-size:82.90314484px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.07257867;"
        x="7.5164785"
        y="283.90781"
        id="text4528"><tspan
@@ -79,29 +81,29 @@
          id="tspan4526"
          x="7.5164785"
          y="283.90781"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';stroke-width:2.07257867;fill:#abc837;fill-opacity:1;stroke:none;">b</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';stroke-width:2.07257867;fill:#000000;fill-opacity:1;stroke:none;">b</tspan></text>
     <circle
        cy="216.98889"
-       cx="51.180779"
+       cx="53.826614"
        id="circle4562"
-       style="fill:#00ccff;stroke:none;stroke-width:0.18033518;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#000000;stroke:none;stroke-width:0.18033518;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        r="8.3141718" />
     <text
        id="text4566"
        y="283.90781"
-       x="52.4799"
-       style="font-style:normal;font-weight:normal;font-size:82.90314484px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#c83737;fill-opacity:1;stroke:none;stroke-width:2.07257867;"
+       x="55.125736"
+       style="font-style:normal;font-weight:normal;font-size:82.90314484px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.07257867"
        xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';stroke-width:2.07257867;fill:#c83737;fill-opacity:1;stroke:none;"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.07257867"
          y="283.90781"
-         x="52.4799"
+         x="55.125736"
          id="tspan4564"
          sodipodi:role="line">r</tspan></text>
     <circle
        r="8.3141718"
-       style="fill:#00ccff;stroke:none;stroke-width:0.18033518;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#000000;stroke:none;stroke-width:0.18033518;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="circle825"
-       cx="78.697472"
+       cx="82.401642"
        cy="216.98889" />
   </g>
 </svg>
