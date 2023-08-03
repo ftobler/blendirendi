@@ -481,7 +481,6 @@ button:hover {
 	position: absolute;
 	top: 0;
     left: calc(50% - 150px);
-	width: 300px;
 	text-align: center;
 	background-color: #30303078;
 }
@@ -502,7 +501,10 @@ button:hover {
     float: left;
 }
 .viewer_number {
-	/* width: 100px; */
+	min-width: 200px;
+	max-width: 400px;
+	overflow: hidden;
+    white-space: nowrap;
 	display: inline-block;
     margin: 14px;
 }
