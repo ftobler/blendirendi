@@ -1,5 +1,7 @@
 function start() {
 
+    document.getElementById("app").style.display = "block"
+
     app = new Vue({
         el: '#app',
         data: {
@@ -9,7 +11,7 @@ function start() {
             active_viewer: false,
             viewer_frame: null,
             jobs: [],
-            disk: [],
+            disk: [1,0,0],
             upload: {
                 is_animation: false,
                 framestart: 1,
