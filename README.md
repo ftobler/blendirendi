@@ -49,36 +49,31 @@ Under the hood:
 
 # Installation
 
-Clone git repository to your machine.
+Clone the git repository to your machine.
 
-Download the Blender version of your choice as a *.zip portable installation. Unpack it into the _blendirendi_ root folder. Thie folder is normally named something like ``blender-3.6.1-windows-x64``
+Download the Blender version of your choice as a *.zip portable installation. Unpack it into the _blendirendi_ root folder. The folder is normally named something like ``blender-3.6.1-windows-x64``.
 
 Edit ``blendirendi.json`` and make the following changes:
 
-* key ``client.blender_path`` set to the blender executable inside your blender installation. E.g: ``./blender-3.6.1-windows-x64/blender.exe``
-* key ``server_url`` set to the url where the client can reach the server. E.g: ``http://192.168.1.50:8080``. Make sure you have the same port set as in ``server.port``. **DO NOT EXPOSE _blendirendi_ TO THE PUBLIC WEB!**
+* Set the key ``client.blender_path`` to the blender executable inside your Blender installation. E.g.: ``./blender-3.6.1-windows-x64/blender.exe``
+* Set the key ``server_url`` to the URL where the client can reach the server. E.g.: ``http://192.168.1.50:8080``. Make sure you have the same port set as in ``server.port``. DO NOT EXPOSE blendirendi TO THE PUBLIC WEB!
 
-Start _blendirendi_ on the server machine using the command ``python blendirendi.py server``
+Start _blendirendi_ on the server machine using the command ``python blendirendi.py server``.
 
-Start _blendirendi_ on the client machine(s) using the command ``python blendirendi.py client``. You can start server and client from the same installation if you server should also be a rendering machine. However, if you want to start the client more than once on a machine, then you need a separate installation of _blendirendi_ for each instance.
+Start _blendirendi_ on the client machine(s) using the command ``python blendirendi.py client``. You can start the server and client from the same installation if your server should also be a rendering machine. However, if you want to start the client more than once on a machine, then you need a separate installation of blendirendi for each instance.
+
+I hope everything also works under Linux.
 
 # Data management
 
-your user data is stored in the following files:
+Your user data is stored in the following files:
 
 * blendirendi.json
 * blendirendi.db
 * data/
 
-the client only needs the file ``blendirendi.json``. But it will create a ``cache`` folder.
+The client only needs the file ``blendirendi.json``, but it will create a ``cache`` folder.
 
 ## Happy Render Time :)
-
-
-
-
-
-
-
 
 
