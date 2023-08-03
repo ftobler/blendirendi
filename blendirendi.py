@@ -161,6 +161,17 @@ def tobool(str, default=False):
         pass
     return default
 
+
+#return size of the folder
+def get_folder_size(folder_path):
+    total_size = 0
+    for dirpath, _dirnames, filenames in os.walk(folder_path):
+        for filename in filenames:
+            file_path = os.path.join(dirpath, filename)
+            total_size += os.path.getsize(file_path)
+    return total_size
+
+
 #bottle web handler
 #serve (static) start page
 @route('/')
@@ -254,6 +265,12 @@ def index():
             job["count_rendering"] = row[11]
         elif row[10] == 2:
             job["count_done"] = row[11]
+        blendfile_name = row[1]
+
+    foldersize = get_folder_size("data/%d" % job_id)
+    blendsize = os.path.getsize("data/%d/%s" % (job_id, blendfile_name))
+    job["folder_size"] = foldersize
+    job["blend_size"] = blendsize
 
     cursor.execute("select * from frame where idjob=? order by nr asc", (job_id,))
     frames = []
@@ -688,7 +705,6 @@ def do_cache_cleanup_if_need():
             except Exception:
                 pass
         last_cache_cleanup = now
-
 
 
 #Client specific logic
