@@ -282,7 +282,7 @@ button:hover {
 }
 
 .image_container_large {
-	width: 1010px;
+	max-width: 1010px;
 	height: 569px;
 	display: flex;
     align-items: center;
@@ -293,8 +293,9 @@ button:hover {
 }
 
 .blur_load {
-	background-size: cover;
+	background-size: contain;
 	background-position: center;
+    background-repeat: no-repeat;
 	width: 100%;
 	height: 100%;
 }
@@ -519,11 +520,12 @@ button:hover {
 
 .disk_usage_progress {
 	height: 8px;
-    width: 250px;
+    width: 200px;
     background-color: black;
     position: relative;
     display: inline-block;
     margin-left: 15px;
+    margin-right: 15px;
 	overflow: hidden;
 	border-radius: 4px;
 }
