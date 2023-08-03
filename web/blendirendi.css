@@ -137,9 +137,6 @@ input {
 	border-radius: 4px;
 	height: 25px;
 }
-input[type="checkbox"] {
-	border: 0px;
-}
 input[type="number"] {
 	padding: 0px 4px;
 	width: 100px;
@@ -535,4 +532,25 @@ button:hover {
 	position: absolute;
     background-color: rgba(255,255,255,0.5);
     height: 100%;
+}
+
+
+.checkbox {
+	width: 40px;
+    height: 20px;
+    margin: 0;
+    appearance: none;
+    border: 1px solid gray;
+	border-radius: 10px;
+
+    transition: background-position .15s ease-in-out;
+	background-repeat: no-repeat;
+	/* that image url is from bootstrap */
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+.checkbox:checked {
+    background-position: right center;
+    background-color: #2152ad;
+    border: 1px solid #2152ad;
 }

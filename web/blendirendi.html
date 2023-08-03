@@ -41,7 +41,7 @@
                         <div>
                             <div>
                                 <div class="key">is animation</div>
-                                <div class="value"><input type="checkbox" name="is_animation" v-model="upload.is_animation"></div>
+                                <div class="value"><input class="checkbox" type="checkbox" name="is_animation" v-model="upload.is_animation"></div>
                             </div>
 
                             <div>
@@ -70,7 +70,7 @@
 
                             <div>
                                 <div class="key">enable job</div>
-                                <div class="value"><input type="checkbox" name="enable" v-model="upload.enable"></div>
+                                <div class="value"><input class="checkbox" type="checkbox" name="enable" v-model="upload.enable"></div>
                                 <div class="value" style="float: right"><button type="submit">Submit</button></div>
                             </div>
 
@@ -104,7 +104,7 @@
                         </div>
                     </td>
                     <td style="width: 7%; padding-left: 15px;">
-                        <input type="checkbox" v-model="_job.enabled" @click="job_save_enabled(_job)"></input>
+                        <input class="checkbox" type="checkbox" v-model="_job.enabled" @click="job_save_enabled(_job)"></input>
                     </td>
                     <td style="width: 15%">
                         <span style="width: 30px; display: inline-block; text-align: right;">{{_job.priority}}</span>
@@ -129,7 +129,7 @@
                     <div class="select">
                         <div>
                             <div class="key">enable</div>
-                            <input type="checkbox" class="value" v-model="job.enabled" @click="job_save_enabled(job)"></input>
+                            <input class="checkbox" type="checkbox" class="value" v-model="job.enabled" @click="job_save_enabled(job)"></input>
                         </div>
 
                         <div>
