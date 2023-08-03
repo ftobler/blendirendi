@@ -197,6 +197,12 @@ function start() {
                 if (this.dropped_file != null) {
                     formdata.append("upload", this.dropped_file)
                 }
+                if (!formdata.get("upload").name.endsWith(".blend")) {
+                    this.upload.error = "The file must be a Blender scene, which ends with *.blend."
+                    this.upload.info = ""
+                    return
+                }
+
                 this.upload.error = ""
                 this.upload.info = "uploading.. please wait."
                 fetch('/api/upload', {method: "POST", body: formdata}).then(response => response.json()).then((json) => {
