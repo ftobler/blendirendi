@@ -6,7 +6,7 @@
     <script src="blendirendi.js"></script>
     <link rel="stylesheet" href="blendirendi.css">
     <html lang="en"></html>
-    <meta name="viewport" content="width=750, initial-scale=1.0">
+    <meta name="viewport" content="width=700, initial-scale=1.0">
 </head>
 <body onload="start()">
     <div id="app">
@@ -188,7 +188,7 @@
                     <div class="flow_panel" v-for="frame in job.frames">
                         <div class="image_container">
                             <!-- <a v-bind:href="'/api/frame?id=' + job.id + '&nr=' + frame.nr" target="_blank"> -->
-                                <image v-if="frame.status==2" v-bind:src="'/api/thumbnail?id=' + job.id + '&nr=' + frame.nr" loading="lazy" @click="viewer_start(job, frame)"></image>
+                                <image v-if="frame.status==2" v-bind:src="'/api/thumbnail?id=' + job.id + '&nr=' + frame.nr" loading="lazy" @click="viewer_start(job, frame)" style="cursor: pointer"></image>
                             <!-- </a> -->
                         </div>
                         <div class="image_bottext select">#{{frame.nr}} - status={{frame.status | eval_status}}<br>time={{frame | eval_rendertime}}<br>svr={{frame.renderer}}</div>
@@ -205,7 +205,9 @@
                     <div class="flow_panel_large" v-for="frame in job.frames">
                         <div class="image_container_large">
                             <!-- <a v-bind:href="'/api/frame?id=' + job.id + '&nr=' + frame.nr" target="_blank"> -->
-                                <image style="width: 1010px; height: 569px; object-fit: contain" v-if="frame.status==2" v-bind:src="'/api/frame?id=' + job.id + '&nr=' + frame.nr"  @click="viewer_start(job, frame)"></image>
+                            <div class="blur_load" v-bind:style="{ 'background-image': 'url(/api/thumbnail?id=' + job.id + '&nr=' + frame.nr + ')' }" @click="viewer_start(job, frame)">
+                                <image style="width: 1010px; height: 569px; object-fit: contain" v-if="frame.status==2" v-bind:src="'/api/frame?id=' + job.id + '&nr=' + frame.nr"  loading="lazy"></image>
+                            </div>
                             <!-- </a> -->
                         </div>
                         <div class="image_bottext_large select">#{{frame.nr}} - status={{frame.status | eval_status}} - time={{frame | eval_rendertime}}<br>server={{frame.renderer}}</div>
@@ -230,7 +232,10 @@
     </div>
 
     <div class="viewer" v-if="active_viewer == true"  @wheel="viewer_wheel" @keyup.right="viewer_keydown">
-        <image v-if="viewer_frame.status==2" class="viewer_image" v-bind:src="'/api/frame?id=' + job.id + '&nr=' + viewer_frame.nr"></image>
+        <div class="viewer_blur_load" v-bind:style="{ 'background-image': 'url(/api/thumbnail?id=' + job.id + '&nr=' + viewer_frame.nr + ')' }">
+            <image v-if="viewer_frame.status==2" class="viewer_image" v-bind:src="'/api/frame?id=' + job.id + '&nr=' + viewer_frame.nr" loading="lazy"></image>
+        </div>
+        
         <div class="viewer_button" @click="viewer_exit()">close</div>
         <div class="viewer_center">
             <div class="viewer_arrow viewer_arrow_left" @click="viewer_nav(-1)">navigate_before</div>
