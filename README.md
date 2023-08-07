@@ -35,10 +35,11 @@ Limitations:
 Under the hood:
 
 * Written in Python
-* Bottle web server with Tornado
+* Bottle web server with Tornado*
 * SQLite database
 * Single-page web frontend with Vue
 
+*I am aware that it is not written to be stateless, since I don't need it to be.
 
 # Images
 
